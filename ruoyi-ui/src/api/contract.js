@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 查询【请填写功能名称】列表
 export function listContract(query) {
   return request({
-    url: '/system/contract/list',
+    url: '/contract/list',
     method: 'get',
     params: query
   })
@@ -12,7 +12,7 @@ export function listContract(query) {
 // 查询【请填写功能名称】详细
 export function getContract(id) {
   return request({
-    url: '/system/contract/' + id,
+    url: '/contract/' + id,
     method: 'get'
   })
 }
@@ -20,7 +20,7 @@ export function getContract(id) {
 // 新增【请填写功能名称】
 export function addContract(data) {
   return request({
-    url: '/system/contract',
+    url: '/contract',
     method: 'post',
     data: data
   })
@@ -29,7 +29,7 @@ export function addContract(data) {
 // 修改【请填写功能名称】
 export function updateContract(data) {
   return request({
-    url: '/system/contract',
+    url: '/contract',
     method: 'put',
     data: data
   })
@@ -38,7 +38,7 @@ export function updateContract(data) {
 // 删除【请填写功能名称】
 export function delContract(id) {
   return request({
-    url: '/system/contract/' + id,
+    url: '/contract/' + id,
     method: 'delete'
   })
 }

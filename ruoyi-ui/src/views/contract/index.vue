@@ -8,31 +8,13 @@
       v-show="showSearch"
       label-width="68px"
     >
-      <el-form-item label="${comment}" prop="title">
+      <el-form-item label="合同标题" prop="title">
         <el-input
           v-model="queryParams.title"
-          placeholder="请输入${comment}"
+          placeholder="请输入合同标题"
           clearable
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
-      <el-form-item label="${comment}" prop="createdBy">
-        <el-input
-          v-model="queryParams.createdBy"
-          placeholder="请输入${comment}"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="${comment}" prop="createdTime">
-        <el-date-picker
-          clearable
-          v-model="queryParams.createdTime"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择${comment}"
-        >
-        </el-date-picker>
       </el-form-item>
       <el-form-item>
         <el-button
@@ -107,14 +89,14 @@
       @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="${comment}" align="center" prop="id" />
-      <el-table-column label="${comment}" align="center" prop="title" />
-      <el-table-column label="${comment}" align="center" prop="content" />
-      <el-table-column label="${comment}" align="center" prop="createdBy" />
-      <el-table-column label="${comment}" align="center" prop="status" />
-      <el-table-column label="${comment}" align="center" prop="filePath" />
+      <el-table-column label="id" align="center" prop="id" />
+      <el-table-column label="合同名称" align="center" prop="title" />
+      <el-table-column label="合同描述" align="center" prop="content" />
+      <el-table-column label="创建人" align="center" prop="createdBy" />
+      <el-table-column label="合同状态" align="center" prop="status" />
+      <el-table-column label="合同路径" align="center" prop="filePath" />
       <el-table-column
-        label="${comment}"
+        label="合同创建时间"
         align="center"
         prop="createdTime"
         width="180"
@@ -157,34 +139,83 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改【请填写功能名称】对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
+    <!-- 添加【合同】对话框 -->
+    <el-dialog
+      :title="title"
+      :visible.sync="openAdd"
+      width="1200px"
+      append-to-body
+    >
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="${comment}" prop="title">
-          <el-input v-model="form.title" placeholder="请输入${comment}" />
+        <el-form-item label="合同标题" prop="title">
+          <el-input v-model="form.title" placeholder="请输入合同标题" />
         </el-form-item>
-        <el-form-item label="${comment}">
+        <el-form-item label="合同描述" prop="content">
           <editor v-model="form.content" :min-height="192" />
         </el-form-item>
-        <el-form-item label="${comment}" prop="createdBy">
-          <el-input v-model="form.createdBy" placeholder="请输入${comment}" />
+        <el-form-item label="上传合同" prop="filePath">
+          <el-upload
+            class="upload-demo"
+            :on-exceed="handleExceed"
+            :file-list="fileList"
+          >
+            <el-button size="small" type="primary">点击上传</el-button>
+            <div slot="tip" class="el-upload__tip">
+              只能上传jpg/png文件，且不超过500kb
+            </div>
+          </el-upload>
         </el-form-item>
-        <el-form-item label="${comment}" prop="filePath">
-          <el-input
-            v-model="form.filePath"
-            type="textarea"
-            placeholder="请输入内容"
+
+        <el-form-item label="合同状态" prop="status">
+          <el-select v-model="form.status" placeholder="请选择合同状态">
+            <el-option label="已发布" value="1" />
+            <el-option label="未发布" value="0" />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button @click="cancel">取 消</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 修改【合同】对话框 -->
+    <el-dialog
+      :title="title"
+      :visible.sync="openUpdate"
+      width="1200px"
+      append-to-body
+    >
+      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+        <el-form-item label="合同标题" prop="title">
+          <el-input v-model="form.title" placeholder="请输入合同标题" />
+        </el-form-item>
+        <el-form-item label="合同描述" prop="content">
+          <Toolbar
+            style="border-bottom: 1px solid #ccc"
+            :editor="editor"
+            :defaultConfig="toolbarConfig"
+            :mode="mode"
+          />
+          <Editor
+            style="height: 500px; overflow-y: hidden"
+            v-model="form.content"
+            :defaultConfig="editorConfig"
+            :mode="mode"
+            @onCreated="onCreated"
           />
         </el-form-item>
-        <el-form-item label="${comment}" prop="createdTime">
-          <el-date-picker
-            clearable
-            v-model="form.createdTime"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="请选择${comment}"
+        <el-form-item label="上传合同" prop="filePath">
+          <el-upload
+            class="upload-demo"
+            :on-exceed="handleExceed"
+            :file-list="fileList"
           >
-          </el-date-picker>
+            <el-button size="small" type="primary">上传修改后的合同</el-button>
+            <div slot="tip" class="el-upload__tip">
+              只能上传jpg/png文件，且不超过500kb
+            </div>
+          </el-upload>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -202,12 +233,20 @@ import {
   delContract,
   addContract,
   updateContract,
-} from "@/api/system/contract";
+} from "@/api/contract";
+import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 
 export default {
   name: "Contract",
+  components: { Editor, Toolbar },
+
   data() {
     return {
+      editor: null,
+      html: "<p>hello</p>",
+      toolbarConfig: {},
+      editorConfig: { placeholder: "请输入内容..." },
+      mode: "default", // or 'simple'
       // 遮罩层
       loading: true,
       // 选中数组
@@ -220,12 +259,13 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 【请填写功能名称】表格数据
+      // 【合同】表格数据
       contractList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
-      open: false,
+      openAdd: false,
+      openUpdate: false,
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -242,22 +282,33 @@ export default {
       // 表单校验
       rules: {
         title: [
-          { required: true, message: "$comment不能为空", trigger: "blur" },
+          { required: true, message: "合同标题不能为空", trigger: "blur" },
         ],
         content: [
-          { required: true, message: "$comment不能为空", trigger: "blur" },
-        ],
-        createdBy: [
-          { required: true, message: "$comment不能为空", trigger: "blur" },
+          { required: true, message: "合同描述不能为空", trigger: "blur" },
         ],
       },
     };
   },
+  beforeDestroy() {
+    const editor = this.editor;
+    if (editor == null) return;
+    editor.destroy(); // 组件销毁时，及时销毁编辑器
+  },
   created() {
     this.getList();
   },
+  mounted() {
+    // 模拟 ajax 请求，异步渲染编辑器
+    setTimeout(() => {
+      this.html = "<p>模拟 Ajax 异步设置内容 HTML</p>";
+    }, 1500);
+  },
   methods: {
-    /** 查询【请填写功能名称】列表 */
+    onCreated(editor) {
+      this.editor = Object.seal(editor); // 一定要用 Object.seal() ，否则会报错
+    },
+    /** 查询【合同】列表 */
     getList() {
       this.loading = true;
       listContract(this.queryParams).then((response) => {
@@ -268,7 +319,8 @@ export default {
     },
     // 取消按钮
     cancel() {
-      this.open = false;
+      this.openAdd = false;
+      this.openUpdate = false;
       this.reset();
     },
     // 表单重置
@@ -303,8 +355,8 @@ export default {
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
-      this.open = true;
-      this.title = "添加【请填写功能名称】";
+      this.openAdd = true;
+      this.title = "添加【合同】";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
@@ -312,8 +364,8 @@ export default {
       const id = row.id || this.ids;
       getContract(id).then((response) => {
         this.form = response.data;
-        this.open = true;
-        this.title = "修改【请填写功能名称】";
+        this.openUpdate = true;
+        this.title = "修改【合同】";
       });
     },
     /** 提交按钮 */
@@ -340,7 +392,7 @@ export default {
     handleDelete(row) {
       const ids = row.id || this.ids;
       this.$modal
-        .confirm('是否确认删除【请填写功能名称】编号为"' + ids + '"的数据项？')
+        .confirm('是否确认删除【合同】编号为"' + ids + '"的数据项？')
         .then(function () {
           return delContract(ids);
         })
