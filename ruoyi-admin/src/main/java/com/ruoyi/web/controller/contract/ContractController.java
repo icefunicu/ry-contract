@@ -95,7 +95,6 @@ public class ContractController extends BaseController
     /**
      * 修改合同
      */
-    @PreAuthorize("@ss.hasPermi('contract:edit')")
     @Log(title = "合同", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody Contract contract)
