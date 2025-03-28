@@ -49,12 +49,6 @@ public class ContractController extends BaseController
     {
         startPage();
         List<Contract> list = contractService.selectContractList(contract);
-        for(Contract c:list){
-            int createdBy = Math.toIntExact(c.getCreatedBy());
-            SysUser sysUser = userService.selectUserById((long) createdBy);
-            c.setCreatedByName(sysUser.getNickName());
-        }
-
         return getDataTable(list);
     }
 

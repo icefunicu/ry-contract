@@ -29,8 +29,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="filePath != null  and filePath != ''"> and file_path = #{filePath}</if>
             <if test="createdTime != null "> and created_time = #{createdTime}</if>
-             <if test="partyA != null "> and party_a = #{partyA}</if>
-              <if test="partyB != null "> and party_b = #{partyB}</if>
         </where>
     </select>
     
