@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.web.mapper.ContractTemplatesMapper">
+    
+    <resultMap type="ContractTemplates" id="ContractTemplatesResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="content"    column="content"    />
+    </resultMap>
+
+    <sql id="selectContractTemplatesVo">
+        select id, name, content from contract_templates
+    </sql>
+
+    <select id="selectContractTemplatesList" parameterType="ContractTemplates" resultMap="ContractTemplatesResult">
+        <include refid="selectContractTemplatesVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+        </where>
+    </select>
+    
+    <select id="selectContractTemplatesById" parameterType="Long" resultMap="ContractTemplatesResult">
+        <include refid="selectContractTemplatesVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertContractTemplates" parameterType="ContractTemplates" useGeneratedKeys="true" keyProperty="id">
+        insert into contract_templates
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="content != null">content,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="content != null">#{content},</if>
+         </trim>
+    </insert>
+
+    <update id="updateContractTemplates" parameterType="ContractTemplates">
+        update contract_templates
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="content != null">content = #{content},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteContractTemplatesById" parameterType="Long">
+        delete from contract_templates where id = #{id}
+    </delete>
+
+    <delete id="deleteContractTemplatesByIds" parameterType="String">
+        delete from contract_templates where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

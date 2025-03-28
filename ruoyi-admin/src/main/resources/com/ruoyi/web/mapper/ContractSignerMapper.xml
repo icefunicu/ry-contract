@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.web.mapper.ContractSignerMapper">
+    
+    <resultMap type="ContractSigner" id="ContractSignerResult">
+        <result property="id"    column="id"    />
+        <result property="contractId"    column="contract_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="signed"    column="signed"    />
+        <result property="signImage"    column="sign_image"    />
+        <result property="signTime"    column="sign_time"    />
+    </resultMap>
+
+    <sql id="selectContractSignerVo">
+        select id, contract_id, user_id, signed, sign_image, sign_time from contract_signer
+    </sql>
+
+    <select id="selectContractSignerList" parameterType="ContractSigner" resultMap="ContractSignerResult">
+        <include refid="selectContractSignerVo"/>
+        <where>  
+            <if test="contractId != null "> and contract_id = #{contractId}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="signed != null "> and signed = #{signed}</if>
+            <if test="signImage != null  and signImage != ''"> and sign_image = #{signImage}</if>
+            <if test="signTime != null "> and sign_time = #{signTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectContractSignerById" parameterType="Long" resultMap="ContractSignerResult">
+        <include refid="selectContractSignerVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertContractSigner" parameterType="ContractSigner" useGeneratedKeys="true" keyProperty="id">
+        insert into contract_signer
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="contractId != null">contract_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="signed != null">signed,</if>
+            <if test="signImage != null">sign_image,</if>
+            <if test="signTime != null">sign_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="contractId != null">#{contractId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="signed != null">#{signed},</if>
+            <if test="signImage != null">#{signImage},</if>
+            <if test="signTime != null">#{signTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateContractSigner" parameterType="ContractSigner">
+        update contract_signer
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="contractId != null">contract_id = #{contractId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="signed != null">signed = #{signed},</if>
+            <if test="signImage != null">sign_image = #{signImage},</if>
+            <if test="signTime != null">sign_time = #{signTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteContractSignerById" parameterType="Long">
+        delete from contract_signer where id = #{id}
+    </delete>
+
+    <delete id="deleteContractSignerByIds" parameterType="String">
+        delete from contract_signer where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

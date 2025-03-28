@@ -30,7 +30,7 @@ import java.util.List;
  * @date 2025-03-28
  */
 @RestController
-@RequestMapping("/system/contract")
+@RequestMapping("contract")
 public class ContractController extends BaseController
 {
     @Autowired
@@ -39,7 +39,7 @@ public class ContractController extends BaseController
     /**
      * 查询合同列表
      */
-    @PreAuthorize("@ss.hasPermi('system:contract:list')")
+    @PreAuthorize("@ss.hasPermi('contract:list')")
     @GetMapping("/list")
     public TableDataInfo list(Contract contract)
     {
@@ -51,7 +51,7 @@ public class ContractController extends BaseController
     /**
      * 导出合同列表
      */
-    @PreAuthorize("@ss.hasPermi('system:contract:export')")
+    @PreAuthorize("@ss.hasPermi('contract:export')")
     @Log(title = "合同", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, Contract contract)
@@ -64,7 +64,7 @@ public class ContractController extends BaseController
     /**
      * 获取合同详细信息
      */
-    @PreAuthorize("@ss.hasPermi('system:contract:query')")
+    @PreAuthorize("@ss.hasPermi('contract:query')")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id)
     {
@@ -74,7 +74,7 @@ public class ContractController extends BaseController
     /**
      * 新增合同
      */
-    @PreAuthorize("@ss.hasPermi('system:contract:add')")
+    @PreAuthorize("@ss.hasPermi('contract:add')")
     @Log(title = "合同", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody Contract contract)
@@ -85,7 +85,7 @@ public class ContractController extends BaseController
     /**
      * 修改合同
      */
-    @PreAuthorize("@ss.hasPermi('system:contract:edit')")
+    @PreAuthorize("@ss.hasPermi('contract:edit')")
     @Log(title = "合同", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody Contract contract)
@@ -96,7 +96,7 @@ public class ContractController extends BaseController
     /**
      * 删除合同
      */
-    @PreAuthorize("@ss.hasPermi('system:contract:remove')")
+    @PreAuthorize("@ss.hasPermi('contract:remove')")
     @Log(title = "合同", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids)
