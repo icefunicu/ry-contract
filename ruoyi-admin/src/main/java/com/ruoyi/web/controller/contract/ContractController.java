@@ -2,7 +2,9 @@ package com.ruoyi.web.controller.contract;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.utils.poi.ExcelUtil;
+import com.ruoyi.system.service.ISysUserService;
 import com.ruoyi.web.domain.Contract;
 import com.ruoyi.web.service.IContractService;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,6 +37,8 @@ public class ContractController extends BaseController
 {
     @Autowired
     private IContractService contractService;
+    @Autowired
+    private ISysUserService userService;
 
     /**
      * 查询合同列表
@@ -45,6 +49,12 @@ public class ContractController extends BaseController
     {
         startPage();
         List<Contract> list = contractService.selectContractList(contract);
+        for(Contract c:list){
+            int createdBy = Math.toIntExact(c.getCreatedBy());
+            SysUser sysUser = userService.selectUserById((long) createdBy);
+            c.setCreatedByName(sysUser.getNickName());
+        }
+
         return getDataTable(list);
     }
 

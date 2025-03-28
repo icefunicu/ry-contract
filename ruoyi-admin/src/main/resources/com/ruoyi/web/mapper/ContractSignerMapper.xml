@@ -11,10 +11,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="signed"    column="signed"    />
         <result property="signImage"    column="sign_image"    />
         <result property="signTime"    column="sign_time"    />
+        <result property="signerRole"    column="signer_role"    />
     </resultMap>
 
     <sql id="selectContractSignerVo">
-        select id, contract_id, user_id, signed, sign_image, sign_time from contract_signer
+        select id, contract_id, user_id, signed, sign_image, sign_time , signer_role from contract_signer
     </sql>
 
     <select id="selectContractSignerList" parameterType="ContractSigner" resultMap="ContractSignerResult">
@@ -25,6 +26,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="signed != null "> and signed = #{signed}</if>
             <if test="signImage != null  and signImage != ''"> and sign_image = #{signImage}</if>
             <if test="signTime != null "> and sign_time = #{signTime}</if>
+             <if test="signerRole != null  and signerRole != ''"> and signer_role = #{signerRole}</if>
         </where>
     </select>
     
@@ -41,6 +43,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="signed != null">signed,</if>
             <if test="signImage != null">sign_image,</if>
             <if test="signTime != null">sign_time,</if>
+            <if test="signerRole != null">signer_role,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="contractId != null">#{contractId},</if>
@@ -48,6 +51,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="signed != null">#{signed},</if>
             <if test="signImage != null">#{signImage},</if>
             <if test="signTime != null">#{signTime},</if>
+            <if test="signerRole != null">#{signerRole},</if>
          </trim>
     </insert>
 
@@ -59,6 +63,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="signed != null">signed = #{signed},</if>
             <if test="signImage != null">sign_image = #{signImage},</if>
             <if test="signTime != null">sign_time = #{signTime},</if>
+            <if test="signerRole != null">signer_role = #{signerRole},</if>
         </trim>
         where id = #{id}
     </update>
