@@ -1,12 +1,14 @@
 package com.ruoyi.web.controller.contract;
 
-import javax.servlet.http.HttpServletResponse;
 
-import com.ruoyi.common.core.domain.entity.SysUser;
+import javax.servlet.http.HttpServletResponse;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.system.service.ISysUserService;
 import com.ruoyi.web.domain.Contract;
 import com.ruoyi.web.service.IContractService;
+import com.ruoyi.web.util.PdfGenerationService;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +24,6 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.core.page.TableDataInfo;
-
 import java.util.List;
 
 /**
@@ -39,6 +40,8 @@ public class ContractController extends BaseController
     private IContractService contractService;
     @Autowired
     private ISysUserService userService;
+    @Autowired
+    private PdfGenerationService pdfGenerationService;
 
     /**
      * 查询合同列表
@@ -105,5 +108,29 @@ public class ContractController extends BaseController
     public AjaxResult remove(@PathVariable Long[] ids)
     {
         return toAjax(contractService.deleteContractByIds(ids));
+    }
+
+
+    @GetMapping("/{id}/pdf")
+    public ResponseEntity<byte[]> getContractPdf(@PathVariable Long id) {
+        try {
+            // 从数据库中获取合同对象
+            Contract contract = contractService.selectContractById(id);
+
+            // 生成 PDF 文件
+            byte[] pdfBytes = pdfGenerationService.generateContractPdf(contract);
+
+            // 设置响应头，告诉浏览器这是一个 PDF 文件
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Content-Disposition", "attachment; filename=contract_" + id + ".pdf");
+
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .contentType(org.springframework.http.MediaType.APPLICATION_PDF)
+                    .body(pdfBytes);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).build();
+        }
     }
 }

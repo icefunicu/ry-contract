@@ -9,7 +9,7 @@ import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
- * 【请填写功能名称】对象 contract
+ * 合同对象 contract
  * 
  * @author ruoyi
  * @date 2025-03-28
@@ -50,85 +50,6 @@ public class Contract extends BaseEntity
 
     private int partyA;
     private int partyB;
-
-    public void setCreatedByName(String createdByName)
-    {
-        this.createdByName = createdByName;
-    }
-    public String getCreatedByName()
-    {
-        return createdByName;
-    }
-    public void setId(Long id) 
-    {
-        this.id = id;
-    }
-
-    public Long getId() 
-    {
-        return id;
-    }
-
-    public void setTitle(String title) 
-    {
-        this.title = title;
-    }
-
-    public String getTitle() 
-    {
-        return title;
-    }
-
-    public void setContent(String content) 
-    {
-        this.content = content;
-    }
-
-    public String getContent() 
-    {
-        return content;
-    }
-
-    public void setCreatedBy(Long createdBy) 
-    {
-        this.createdBy = createdBy;
-    }
-
-    public Long getCreatedBy() 
-    {
-        return createdBy;
-    }
-
-    public void setStatus(String status) 
-    {
-        this.status = status;
-    }
-
-    public String getStatus() 
-    {
-        return status;
-    }
-
-    public void setFilePath(String filePath) 
-    {
-        this.filePath = filePath;
-    }
-
-    public String getFilePath() 
-    {
-        return filePath;
-    }
-
-    public void setCreatedTime(Date createdTime) 
-    {
-        this.createdTime = createdTime;
-    }
-
-    public Date getCreatedTime() 
-    {
-        return createdTime;
-    }
-
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)

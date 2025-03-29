@@ -6,7 +6,7 @@ import java.util.List;
 
 
 /**
- * 【请填写功能名称】Service接口
+ * 合同Service接口
  * 
  * @author ruoyi
  * @date 2025-03-28
@@ -14,50 +14,51 @@ import java.util.List;
 public interface IContractService 
 {
     /**
-     * 查询【请填写功能名称】
+     * 查询合同
      * 
-     * @param id 【请填写功能名称】主键
-     * @return 【请填写功能名称】
+     * @param id 合同主键
+     * @return 合同
      */
     public Contract selectContractById(Long id);
 
     /**
-     * 查询【请填写功能名称】列表
+     * 查询合同列表
      * 
-     * @param contract 【请填写功能名称】
-     * @return 【请填写功能名称】集合
+     * @param contract 合同
+     * @return 合同集合
      */
     public List<Contract> selectContractList(Contract contract);
 
     /**
-     * 新增【请填写功能名称】
+     * 新增合同
      * 
-     * @param contract 【请填写功能名称】
+     * @param contract 合同
      * @return 结果
      */
     public int insertContract(Contract contract);
 
     /**
-     * 修改【请填写功能名称】
+     * 修改合同
      * 
-     * @param contract 【请填写功能名称】
+     * @param contract 合同
      * @return 结果
      */
     public int updateContract(Contract contract);
 
     /**
-     * 批量删除【请填写功能名称】
+     * 批量删除合同
      * 
-     * @param ids 需要删除的【请填写功能名称】主键集合
+     * @param ids 需要删除的合同主键集合
      * @return 结果
      */
     public int deleteContractByIds(Long[] ids);
 
     /**
-     * 删除【请填写功能名称】信息
+     * 删除合同信息
      * 
-     * @param id 【请填写功能名称】主键
+     * @param id 合同主键
      * @return 结果
      */
     public int deleteContractById(Long id);
+
 }
