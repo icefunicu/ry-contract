@@ -52,6 +52,14 @@ public class ContractController extends BaseController
     {
         startPage();
         List<Contract> list = contractService.selectContractList(contract);
+        for(Contract c:list){
+            int userId = c.getCreatedBy();
+            int partyA = c.getPartyA();
+            int partyB = c.getPartyB();
+            c.setCreatedByName(userService.selectUserById((long) userId).getNickName());
+            c.setPartyAName(userService.selectUserById((long)partyA).getNickName());
+            c.setPartyBName(userService.selectUserById((long)partyB).getNickName());
+        }
         return getDataTable(list);
     }
 

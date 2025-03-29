@@ -25,7 +25,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
             <if test="title != null  and title != ''"> and title = #{title}</if>
             <if test="content != null  and content != ''"> and content = #{content}</if>
-            <if test="createdBy != null "> and created_by = #{createdBy}</if>
+            <if test="createdBy != null and createdBy != '' "> and created_by = #{createdBy}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="filePath != null  and filePath != ''"> and file_path = #{filePath}</if>
             <if test="createdTime != null "> and created_time = #{createdTime}</if>

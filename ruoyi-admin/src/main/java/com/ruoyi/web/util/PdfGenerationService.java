@@ -28,7 +28,6 @@ public class PdfGenerationService {
         }
 
         // 使用 BaseFont 加载字体文件
-        BaseFont baseFont = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED, true, fontStream.readAllBytes(), null);
         FontFactory.getFont("SimSun", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
         // 设置字体

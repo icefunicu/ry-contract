@@ -20,7 +20,7 @@ public class Contract extends BaseEntity
     private static final long serialVersionUID = 1L;
 
     /** $column.columnComment */
-    private Long id;
+    private int id;
 
     /** $column.columnComment */
     @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
@@ -32,7 +32,7 @@ public class Contract extends BaseEntity
 
     /** $column.columnComment */
     @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
-    private Long createdBy;
+    private int createdBy;
 
     private String createdByName;
 
@@ -49,7 +49,11 @@ public class Contract extends BaseEntity
     private Date createdTime;
 
     private int partyA;
+
     private int partyB;
+
+    private String partyAName;
+    private String partyBName;
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -60,6 +64,11 @@ public class Contract extends BaseEntity
             .append("status", getStatus())
             .append("filePath", getFilePath())
             .append("createdTime", getCreatedTime())
+            .append("partyA", getPartyA())
+            .append("partyB", getPartyB())
+            .append("partyAName", getPartyAName())
+            .append("partyBName", getPartyBName())
+            .append("createdByName", getCreatedByName())
             .toString();
     }
 }
