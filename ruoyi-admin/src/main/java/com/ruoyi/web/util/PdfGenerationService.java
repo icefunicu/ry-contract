@@ -49,19 +49,26 @@ public class PdfGenerationService {
         return "<html>" +
                 "<head>" +
                 "<meta charset='UTF-8'/>" +
-                "<style>body { font-family: 'SimSun'; }</style>" +
+                "<style>" +
+                "body { font-family: 'SimSun'; }" +
+                "h1, h2, h3, p { margin: 0; padding: 0; }" +
+                "</style>" +
                 "</head>" +
                 "<body>" +
+                // 基本合同信息
                 "<h1 style='text-align: center; font-size: 40px; font-family: SimSun;'>" +
                 "<strong>" + contract.getTitle() + "</strong>" +
                 "</h1>" +
-                "<p><br /></p>" +
-                "<p><strong>创建人：</strong>" + contract.getCreatedBy() + "</p>" +
-                "<p><strong>合同状态：</strong>" + contract.getStatus() + "</p>" +
-                "<p><strong>甲方：</strong>" + contract.getPartyA() + "</p>" +
-                "<p><strong>乙方：</strong>" + contract.getPartyB() + "</p>" +
+                "<p><strong>创建人：</strong>" + contract.getCreatedBy() + "</p>" + "<br/>" +
+                "<p><strong>合同状态：</strong>" + contract.getStatus() + "</p>" +"<br/>" +
+                "<p><strong>甲方：</strong>" + contract.getPartyA() + "</p>" +"<br/>" +
+                "<p><strong>乙方：</strong>" + contract.getPartyB() + "</p>" +"<br/>" +
+                // 合同内容（原样嵌入）
+                "<div>" +
                 contract.getContent() +
-                "</body></html>";
+                "</div>" +
+                "</body>" +
+                "</html>";
     }
 
 
