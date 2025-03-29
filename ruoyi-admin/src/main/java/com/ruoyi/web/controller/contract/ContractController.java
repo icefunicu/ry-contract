@@ -2,12 +2,22 @@ package com.ruoyi.web.controller.contract;
 
 
 import javax.servlet.http.HttpServletResponse;
+
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.system.service.ISysUserService;
 import com.ruoyi.web.domain.Contract;
 import com.ruoyi.web.service.IContractService;
 import com.ruoyi.web.util.PdfGenerationService;
+import lombok.val;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +34,10 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.core.page.TableDataInfo;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -40,8 +54,6 @@ public class ContractController extends BaseController
     private IContractService contractService;
     @Autowired
     private ISysUserService userService;
-    @Autowired
-    private PdfGenerationService pdfGenerationService;
 
     /**
      * 查询合同列表
@@ -118,27 +130,58 @@ public class ContractController extends BaseController
         return toAjax(contractService.deleteContractByIds(ids));
     }
 
+    @Value("${ruoyi.profile}")
+    private String contractPath;
 
-    @GetMapping("/{id}/pdf")
-    public ResponseEntity<byte[]> getContractPdf(@PathVariable Long id) {
-        try {
-            // 从数据库中获取合同对象
-            Contract contract = contractService.selectContractById(id);
+    /**
+     *  根据 contractId 查找合同并转换为 PDF 返回
+     */
+    @GetMapping("/{contractId}/pdf")
+    public ResponseEntity<InputStreamResource> getContractPdf(@PathVariable String contractId) throws Exception {
+        Contract contract = contractService.selectContractById(Long.parseLong(contractId));
 
-            // 生成 PDF 文件
-            byte[] pdfBytes = pdfGenerationService.generateContractPdf(contract);
+        String docxPath = contractPath + contract.getFilePath();
 
-            // 设置响应头，告诉浏览器这是一个 PDF 文件
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Content-Disposition", "attachment; filename=contract_" + id + ".pdf");
-
-            return ResponseEntity.ok()
-                    .headers(headers)
-                    .contentType(org.springframework.http.MediaType.APPLICATION_PDF)
-                    .body(pdfBytes);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).build();
+        File docxFile = new File(docxPath);
+        if (!docxFile.exists()) {
+            return ResponseEntity.notFound().build();
         }
+
+        // 临时 PDF 文件路径
+        File pdfFile = File.createTempFile(contractPath + contractId, ".pdf");
+
+        // 执行转换
+        convertWordToPdf(docxPath, pdfFile.getAbsolutePath());
+
+        // 读取 PDF 并返回
+        InputStream inputStream = new FileInputStream(pdfFile);
+        InputStreamResource resource = new InputStreamResource(inputStream);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + contractId + ".pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(resource);
+    }
+
+
+
+    /**
+     *  Word 转换为 PDF 方法
+     */
+    private void convertWordToPdf(String wordPath, String pdfPath) throws Exception {
+        FileInputStream fis = new FileInputStream(wordPath);
+        XWPFDocument document = new XWPFDocument(fis);
+
+        PdfWriter writer = new PdfWriter(pdfPath);
+        PdfDocument pdf = new PdfDocument(writer);
+        Document pdfDoc = new Document(pdf);
+
+        // 读取 Word 内容并写入 PDF
+        document.getParagraphs().forEach(paragraph -> pdfDoc.add(new Paragraph(paragraph.getText())));
+
+        // 关闭流
+        pdfDoc.close();
+        pdf.close();
+        document.close();
+        fis.close();
     }
 }
