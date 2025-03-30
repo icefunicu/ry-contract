@@ -127,11 +127,12 @@ public class ContractController extends BaseController
     }
 
     /**
-     *  提交审核
+     *  开始签署合同
      * */
     @PostMapping("/submit")
     public AjaxResult submit(@RequestBody Contract contract){
-        return success(contractService.submitContract(contract));
+        contract.setStatus("签署中");
+        return success(contractService.updateContract(contract));
     }
     /**
      * 删除合同

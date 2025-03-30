@@ -61,5 +61,4 @@ public interface IContractService
      */
     public int deleteContractById(Long id);
 
-    String submitContract(Contract contract);
 }

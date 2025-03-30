@@ -99,19 +99,4 @@ public class ContractServiceImpl implements IContractService
         return contractMapper.deleteContractById(id);
     }
 
-    @Override
-    public String submitContract(Contract contract) {
-        contract.setStatus("待审批");
-        updateContract(contract);
-        ContractApproval contractApproval = new ContractApproval();
-        contractApproval.setContractId((long) contract.getId());
-        contractApproval.setStatus("待审批");
-        contractApproval.setComment("等待审核人员审批");
-        contractApproval.setApprovedTime(new Date());
-        contractApproval.setApproverId(3L);
-        if(contractApprovalMapper.selectContractApprovalById((long) contract.getId()) != null){
-            return "合同已提交";
-        }
-        return contractApprovalMapper.insertContractApproval(contractApproval) > 0 ? "合同提交成功" : "合同提交失败";
-    }
 }
