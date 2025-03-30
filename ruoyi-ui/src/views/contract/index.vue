@@ -233,7 +233,7 @@ import {
   delContract,
   addContract,
   updateContract,
-} from "@/api/contract";
+} from "@/api//contract";
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 
 export default {
@@ -272,12 +272,7 @@ export default {
         pageSize: 10,
         title: null,
         content: null,
-        createdByName: null,
         createdBy: null,
-        partyA: null,
-        partyB: null,
-        partyAName: null,
-        partyBName: null,
         status: null,
         filePath: null,
         createdTime: null,
@@ -410,7 +405,7 @@ export default {
     /** 导出按钮操作 */
     handleExport() {
       this.download(
-        "system/contract/export",
+        "/contract/export",
         {
           ...this.queryParams,
         },

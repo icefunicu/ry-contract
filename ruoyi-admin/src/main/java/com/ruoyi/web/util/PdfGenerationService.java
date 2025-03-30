@@ -1,16 +1,14 @@
 package com.ruoyi.web.util;
 
 import com.itextpdf.text.DocumentException;
-import com.lowagie.text.PageSize;
 import com.ruoyi.web.domain.Contract;
 import org.xhtmlrenderer.pdf.ITextRenderer;
-import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.pdf.BaseFont;
 import org.springframework.stereotype.Service;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
+import java.io.File;
 
 @Service
 public class PdfGenerationService {

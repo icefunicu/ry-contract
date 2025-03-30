@@ -70,6 +70,23 @@ module.exports = {
         deleteOriginalAssets: false                    // 压缩后删除原文件
       })
     ],
+
+    module: {
+      rules: [
+        {
+          test: /\.ts$/,
+          loader: 'ts-loader',
+          options: { appendTsSuffixTo: [/.vue$/] },
+          exclude: /node_modules/
+        }
+      ]
+    },
+    resolve: {
+      extensions: ['.ts', '.js', '.vue', '.json'],
+      alias: {
+        '@': require('path').resolve(__dirname, 'src')
+      }
+    }
   },
   chainWebpack(config) {
     config.plugins.delete('preload') // TODO: need test

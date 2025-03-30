@@ -14,7 +14,9 @@ import com.ruoyi.web.util.PdfGenerationService;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,9 +34,12 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.core.page.TableDataInfo;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -122,7 +127,7 @@ public class ContractController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('contract:remove')")
     @Log(title = "合同", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
+    @DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids)
     {
         return toAjax(contractService.deleteContractByIds(ids));
@@ -183,6 +188,79 @@ public class ContractController extends BaseController
         }
     }
 
+    /**
+     * 调用wkhtmltopdf生成pdf
+     */
+    @GetMapping("/{contractId}/html2pdf")
+    public ResponseEntity<Resource> generateContractPdf(@PathVariable long contractId) {
+        try {
+            // 1. 查找合同对象
+            Contract contract = contractService.selectContractById(contractId);
+            if (contract == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+
+            // 2. 生成 PDF
+            String htmlFilePath = contractPath + "/contract_" + contractId + ".html";
+            String pdfFilePath = contractPath + "/contract_" + contractId + ".pdf";
+            saveHtmlToFile(contract.getContent(), htmlFilePath);
+            generatePdfFromHtml(htmlFilePath, pdfFilePath);
+
+            // 3. 读取 PDF 并返回给前端
+            File file = new File(pdfFilePath);
+            InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + file.getName());
+
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .contentLength(file.length())
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .body(resource);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+    // 生成 HTML 文件
+    private void saveHtmlToFile(String htmlContent, String filePath) throws IOException {
+        String htmlWrapper = "<!DOCTYPE html>\n<html>\n<head>\n<meta charset=\"UTF-8\">\n<title>合同</title>\n</head>\n<body>\n"
+                + htmlContent +
+                "\n</body>\n</html>";
+        Files.write(Paths.get(filePath), htmlWrapper.getBytes());
+    }
+    // 调用 wkhtmltopdf 生成 PDF
+    private void generatePdfFromHtml(String htmlFilePath, String pdfFilePath) throws IOException, InterruptedException {
+//        ProcessBuilder builder = new ProcessBuilder(
+//                "D:\\language_pakge\\wkhtmltopdf\\bin\\wkhtmltopdf.exe", "--enable-local-file-access", htmlFilePath, pdfFilePath
+//        );
+        ProcessBuilder builder = new ProcessBuilder(
+                "wkhtmltopdf.exe", "--enable-local-file-access", htmlFilePath, pdfFilePath
+        );
+
+        builder.redirectErrorStream(true); // 合并标准输出和错误输出
+        Process process = null;
+        try {
+            process = builder.start();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // 读取输出
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8))) {
+
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println("[wkhtmltopdf] " + line);
+            }
+        }
+
+        int exitCode = process.waitFor();
+        if (exitCode != 0) {
+            throw new RuntimeException("wkhtmltopdf 执行失败，退出码：" + exitCode);
+        }
+    }
     /**
      *  Word 转换为 PDF 方法
      */
