@@ -89,8 +89,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectContractByPaOrPb" parameterType="Contract" resultMap="ContractResult">
         <include refid="selectContractVo"/>
         <where>
-            <if test="partyA != null  and partyA != ''">or party_a = #{partyA} </if>
-            <if test="partyB != null  and partyB != ''">or party_b = #{partyB} </if>
+            <if test="userId != null and userId != ''">
+                 party_a = #{userId} or party_b = #{userId}
+            </if>
         </where>
     </select>
 </mapper>
