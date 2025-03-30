@@ -1,10 +1,12 @@
 package com.ruoyi.web.service.impl;
 
 
+import java.util.Date;
 import java.util.List;
 
-import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.web.domain.Contract;
+import com.ruoyi.web.domain.ContractApproval;
+import com.ruoyi.web.mapper.ContractApprovalMapper;
 import com.ruoyi.web.mapper.ContractMapper;
 import com.ruoyi.web.service.IContractService;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,8 @@ public class ContractServiceImpl implements IContractService
 {
     @Resource
     private ContractMapper contractMapper;
+    @Resource
+    private ContractApprovalMapper contractApprovalMapper;
 
     /**
      * 查询合同
@@ -93,5 +97,21 @@ public class ContractServiceImpl implements IContractService
     public int deleteContractById(Long id)
     {
         return contractMapper.deleteContractById(id);
+    }
+
+    @Override
+    public String submitContract(Contract contract) {
+        contract.setStatus("待审批");
+        updateContract(contract);
+        ContractApproval contractApproval = new ContractApproval();
+        contractApproval.setContractId((long) contract.getId());
+        contractApproval.setStatus("待审批");
+        contractApproval.setComment("等待审核人员审批");
+        contractApproval.setApprovedTime(new Date());
+        contractApproval.setApproverId(3L);
+        if(contractApprovalMapper.selectContractApprovalById((long) contract.getId()) != null){
+            return "合同已提交";
+        }
+        return contractApprovalMapper.insertContractApproval(contractApproval) > 0 ? "合同提交成功" : "合同提交失败";
     }
 }

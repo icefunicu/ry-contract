@@ -1,6 +1,8 @@
 package com.ruoyi.web.controller.contract;
 
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
@@ -11,6 +13,7 @@ import com.ruoyi.system.service.ISysUserService;
 import com.ruoyi.web.domain.Contract;
 import com.ruoyi.web.service.IContractService;
 import com.ruoyi.web.util.PdfGenerationService;
+import lombok.val;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
@@ -107,8 +110,9 @@ public class ContractController extends BaseController
     @PreAuthorize("@ss.hasPermi('contract:add')")
     @Log(title = "合同", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody Contract contract)
+    public AjaxResult add(@RequestBody Contract contract, HttpServletRequest request)
     {
+        contract.setCreatedBy(Math.toIntExact(getUserId()));
         return toAjax(contractService.insertContract(contract));
     }
 
@@ -122,6 +126,13 @@ public class ContractController extends BaseController
         return toAjax(contractService.updateContract(contract));
     }
 
+    /**
+     *  提交审核
+     * */
+    @PostMapping("/submit")
+    public AjaxResult submit(@RequestBody Contract contract){
+        return success(contractService.submitContract(contract));
+    }
     /**
      * 删除合同
      */

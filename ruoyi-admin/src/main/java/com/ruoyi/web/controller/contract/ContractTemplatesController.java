@@ -101,4 +101,5 @@ public class ContractTemplatesController extends BaseController
     {
         return toAjax(contractTemplatesService.deleteContractTemplatesByIds(ids));
     }
+
 }
