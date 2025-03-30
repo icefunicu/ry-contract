@@ -66,12 +66,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="SET" suffixOverrides=",">
             <if test="title != null and title != ''">title = #{title},</if>
             <if test="content != null and content != ''">content = #{content},</if>
-            <if test="createdBy != null">created_by = #{createdBy},</if>
-            <if test="status != null">status = #{status},</if>
-            <if test="filePath != null">file_path = #{filePath},</if>
+            <if test="createdBy != null and createBy != ''">created_by = #{createdBy},</if>
+            <if test="status != null status != ''">status = #{status},</if>
+            <if test="filePath != null filePath != ''">file_path = #{filePath},</if>
             <if test="createdTime != null">created_time = #{createdTime},</if>
-            <if test="partyA != null">party_a = #{partyA},</if>
-            <if test="partyB != null">party_b = #{partyB},</if>
+            <if test="partyA != null and partyA != ''">party_a = #{partyA},</if>
+            <if test="partyB != null and partyB != ''">party_b = #{partyB},</if>
         </trim>
         where id = #{id}
     </update>
