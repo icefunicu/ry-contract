@@ -11,8 +11,10 @@ import com.itextpdf.layout.element.Paragraph;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.system.service.ISysUserService;
 import com.ruoyi.web.domain.Contract;
+import com.ruoyi.web.domain.ContractApproval;
 import com.ruoyi.web.domain.ContractNotify;
 import com.ruoyi.web.domain.ContractNotifyVo;
+import com.ruoyi.web.service.IContractApprovalService;
 import com.ruoyi.web.service.IContractNotifyService;
 import com.ruoyi.web.service.IContractService;
 import com.ruoyi.web.util.PdfGenerationService;
@@ -46,6 +48,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -66,6 +69,8 @@ public class ContractController extends BaseController
     private PdfGenerationService pdfGenerationService;
     @Autowired
     private IContractNotifyService contractNotifyService;
+    @Autowired
+    private IContractApprovalService contractApprovalService;
     /**
      * 查询合同列表
      */
@@ -229,6 +234,39 @@ public class ContractController extends BaseController
             e.printStackTrace();
             return ResponseEntity.status(500).build();
         }
+    }
+
+    /**
+    *
+    *  提交意见，更新合同状态为待修改
+    * */
+    @PostMapping("/submitOpinion")
+    public AjaxResult submitOpinion(@RequestBody Contract contract){
+        contract.setStatus("待修改");
+        ContractNotify contractNotify = new ContractNotify();
+        contractNotify.setContractId((long) contract.getId());
+        contractNotify.setContent(contract.getOpinion());
+        contractNotify.setNotifyStatus("未处理");
+        contractNotify.setUserId(getUserId());
+        contractNotify.setUserName(userService.selectUserById(getUserId()).getNickName());
+        contractNotifyService.insertContractNotify(contractNotify);
+        contractService.updateContract(contract);
+        return success();
+    }
+    /**
+     *  通过合同，更新合同状态为待审批
+     * */
+    @PostMapping("/pass")
+    public AjaxResult pass(@RequestBody Contract contract){
+        contract.setStatus("待审批");
+        ContractApproval contractApproval = new ContractApproval();
+        contractApproval.setContractId((long) contract.getId());
+        contractApproval.setComment("待审批");
+        contractApproval.setApproverId(103L);
+        contractApproval.setStatus("待审批");
+        contractApproval.setApprovedTime(new Date());
+        contractApprovalService.insertContractApproval(contractApproval);
+        return success(contractService.updateContract(contract));
     }
 
     /**

@@ -7,15 +7,15 @@ import java.util.List;
 
 /**
  * 合同Service接口
- * 
+ *
  * @author ruoyi
  * @date 2025-03-28
  */
-public interface IContractService 
+public interface IContractService
 {
     /**
      * 查询合同
-     * 
+     *
      * @param id 合同主键
      * @return 合同
      */
@@ -23,7 +23,7 @@ public interface IContractService
 
     /**
      * 查询合同列表
-     * 
+     *
      * @param contract 合同
      * @return 合同集合
      */
@@ -31,7 +31,7 @@ public interface IContractService
 
     /**
      * 新增合同
-     * 
+     *
      * @param contract 合同
      * @return 结果
      */
@@ -39,7 +39,7 @@ public interface IContractService
 
     /**
      * 修改合同
-     * 
+     *
      * @param contract 合同
      * @return 结果
      */
@@ -47,7 +47,7 @@ public interface IContractService
 
     /**
      * 批量删除合同
-     * 
+     *
      * @param ids 需要删除的合同主键集合
      * @return 结果
      */
@@ -55,7 +55,7 @@ public interface IContractService
 
     /**
      * 删除合同信息
-     * 
+     *
      * @param id 合同主键
      * @return 结果
      */

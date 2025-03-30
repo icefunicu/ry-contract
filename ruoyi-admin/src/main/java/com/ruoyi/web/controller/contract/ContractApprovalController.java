@@ -2,6 +2,9 @@ package com.ruoyi.web.controller.contract;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.system.service.ISysUserService;
+import com.ruoyi.web.service.IContractService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,7 +36,10 @@ public class ContractApprovalController extends BaseController
 {
     @Autowired
     private IContractApprovalService contractApprovalService;
-
+    @Autowired
+    private ISysUserService userService;
+    @Autowired
+    private IContractService contractService;
     /**
      * 查询合同签署流程列表
      */
@@ -42,8 +48,13 @@ public class ContractApprovalController extends BaseController
     public TableDataInfo list(ContractApproval contractApproval)
     {
         startPage();
-
         List<ContractApproval> list = contractApprovalService.selectContractApprovalList(contractApproval);
+        for (ContractApproval approval : list) {
+            Long approverId = approval.getApproverId();
+            Long contractId = approval.getContractId();
+            approval.setApproverName(userService.selectUserById(approverId).getUserName());
+            approval.setContractTitle(contractService.selectContractById(contractId).getTitle());
+        }
         return getDataTable(list);
     }
 

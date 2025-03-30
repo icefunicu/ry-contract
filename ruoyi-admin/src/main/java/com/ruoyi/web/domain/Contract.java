@@ -10,7 +10,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
  * 合同对象 contract
- * 
+ *
  * @author ruoyi
  * @date 2025-03-28
  */
@@ -54,6 +54,7 @@ public class Contract extends BaseEntity
 
     private String partyAName;
     private String partyBName;
+    private String opinion;
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
