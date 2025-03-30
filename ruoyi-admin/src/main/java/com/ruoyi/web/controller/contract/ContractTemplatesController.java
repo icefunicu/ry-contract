@@ -114,19 +114,76 @@ public class ContractTemplatesController extends BaseController
         try (InputStream input = file.getInputStream()) {
             XWPFDocument document = new XWPFDocument(input);
             XHTMLOptions options = XHTMLOptions.create()
-                    .setImageManager(new Base64EmbedImgManager()) // 图片转Base64
-                    .setFragment(true) // 忽略HTML头尾标签
-                    .setOmitHeaderFooterPages(true); // 忽略页眉页脚
+                    .setImageManager(new Base64EmbedImgManager())  // 图片转Base64
+                    .setFragment(true);  // 只转换内容，不包括头尾标签
 
             ByteArrayOutputStream htmlStream = new ByteArrayOutputStream();
             XHTMLConverter.getInstance().convert(document, htmlStream, options);
+
             String html = new String(htmlStream.toByteArray(), StandardCharsets.UTF_8);
+
+            // 手动处理标题、居中和字体样式转换
+            html = convertHeadingsToHtmlTags(html);  // 转换标题
+            html = convertTextAlignmentToHtmlTags(html); // 处理居中样式
+            html = convertFontStylesToHtmlTags(html); // 处理字体样式（粗体、斜体等）
+
+            // 清洗 HTML，去除不必要的标签和错误的标签闭合
+            html = cleanHtmlTags(html);
+
+            System.out.println(html);  // 打印 HTML 内容查看
+
+            // 保存到数据库
             ContractTemplates contractTemplates = new ContractTemplates();
             contractTemplates.setContent(html);
-            contractTemplates.setName(file.getOriginalFilename().toString().substring(0, file.getOriginalFilename().toString().lastIndexOf(".")));
-            return contractTemplatesService.insertContractTemplates(contractTemplates) > 0 ?success("上传成功"):error("上传失败");
+            contractTemplates.setName(file.getOriginalFilename().substring(0, file.getOriginalFilename().lastIndexOf(".")));
+
+            return contractTemplatesService.insertContractTemplates(contractTemplates) > 0 ? success("上传成功") : error("上传失败");
         } catch (Exception e) {
             return error(e.getMessage());
         }
     }
+
+    private String convertHeadingsToHtmlTags(String html) {
+        // 不需要转换为 h1, h2 等，保持为 <p><span> 格式
+        // 如果需要对标题部分进行特别标记，可以保留 <p> 标签并应用样式
+        html = html.replaceAll("(<p style=\"font-size:20pt;\">)(.*?)(</p>)", "<p><span style=\"font-size:20pt;\">$2</span></p>");
+        html = html.replaceAll("(<p style=\"font-size:16pt;\">)(.*?)(</p>)", "<p><span style=\"font-size:16pt;\">$2</span></p>");
+        html = html.replaceAll("(<p style=\"font-size:14pt;\">)(.*?)(</p>)", "<p><span style=\"font-size:14pt;\">$2</span></p>");
+        html = html.replaceAll("(<p style=\"font-size:12pt;\">)(.*?)(</p>)", "<p><span style=\"font-size:12pt;\">$2</span></p>");
+        return html;
+    }
+
+    private String convertTextAlignmentToHtmlTags(String html) {
+        // 处理居中样式，只保留 <p> 和 <span>，去除多余的 <div> 标签
+        html = html.replaceAll("<p style=\"text-align:center;\">", "<p><span style=\"text-align: center;\">");
+        html = html.replaceAll("</p>", "</span></p>");
+        return html;
+    }
+
+    private String convertFontStylesToHtmlTags(String html) {
+        // 转换字体样式（如粗体、斜体等），保持为 <span> 标签
+        html = html.replaceAll("<p style=\"font-weight:bold;\">", "<p><span style=\"font-weight: bold;\">");
+        html = html.replaceAll("<p style=\"font-style:italic;\">", "<p><span style=\"font-style: italic;\">");
+        html = html.replaceAll("<p style=\"text-decoration:underline;\">", "<p><span style=\"text-decoration: underline;\">");
+
+        // 确保结束标签正确
+        html = html.replaceAll("</p>", "</span></p>");
+
+        return html;
+    }
+
+    private String cleanHtmlTags(String html) {
+        // 去除多余的空标签
+        html = html.replaceAll("<p><br/></p>", "");  // 清除没有实际内容的空 p 标签
+        html = html.replaceAll("<div><br/></div>", "");  // 清除没有实际内容的空 div 标签
+        html = html.replaceAll("<br/>", "");  // 删除所有无用的 <br> 标签
+
+        // 修复标签嵌套问题，确保标签闭合正确
+        html = html.replaceAll("<p><span[^>]*>", "<p><span>");  // 确保 span 标签没有多余属性
+        html = html.replaceAll("<span[^>]*>", "<span>");  // 只保留 span 标签
+
+        return html;
+    }
+
+
 }
