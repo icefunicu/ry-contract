@@ -242,6 +242,16 @@ public class ContractController extends BaseController
     * */
     @PostMapping("/submitOpinion")
     public AjaxResult submitOpinion(@RequestBody Contract contract){
+        if(contract.getCreatedBy() == getUserId()){
+            ContractNotify contractNotify = new ContractNotify();
+            contractNotify.setContractId((long) contract.getId());
+            contractNotify.setContent(contract.getOpinion());
+            contractNotify.setNotifyStatus("未处理");
+            contractNotify.setUserId(getUserId());
+            contractNotify.setUserName(userService.selectUserById(getUserId()).getNickName());
+            contractNotifyService.insertContractNotify(contractNotify);
+            contractService.updateContract(contract);
+        }
         contract.setStatus("待修改");
         ContractNotify contractNotify = new ContractNotify();
         contractNotify.setContractId((long) contract.getId());
