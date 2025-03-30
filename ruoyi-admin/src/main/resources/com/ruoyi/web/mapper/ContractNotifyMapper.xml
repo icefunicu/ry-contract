@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.web.mapper.ContractNotifyMapper">
+    
+    <resultMap type="ContractNotify" id="ContractNotifyResult">
+        <result property="id"    column="id"    />
+        <result property="contractId"    column="contract_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="content"    column="content"    />
+        <result property="createdAt"    column="created_at"    />
+        <result property="notifyStatus"    column="notify_status"    />
+    </resultMap>
+
+    <sql id="selectContractNotifyVo">
+        select id, contract_id, user_id, user_name, content, created_at, notify_status from contract_notify
+    </sql>
+
+    <select id="selectContractNotifyList" parameterType="ContractNotify" resultMap="ContractNotifyResult">
+        <include refid="selectContractNotifyVo"/>
+        <where>  
+            <if test="contractId != null "> and contract_id = #{contractId}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="createdAt != null "> and created_at = #{createdAt}</if>
+            <if test="notifyStatus != null  and notifyStatus != ''"> and notify_status = #{notifyStatus}</if>
+        </where>
+    </select>
+    
+    <select id="selectContractNotifyById" parameterType="Long" resultMap="ContractNotifyResult">
+        <include refid="selectContractNotifyVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertContractNotify" parameterType="ContractNotify" useGeneratedKeys="true" keyProperty="id">
+        insert into contract_notify
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="contractId != null">contract_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="userName != null and userName != ''">user_name,</if>
+            <if test="content != null and content != ''">content,</if>
+            <if test="createdAt != null">created_at,</if>
+            <if test="notifyStatus != null">notify_status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="contractId != null">#{contractId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="userName != null and userName != ''">#{userName},</if>
+            <if test="content != null and content != ''">#{content},</if>
+            <if test="createdAt != null">#{createdAt},</if>
+            <if test="notifyStatus != null">#{notifyStatus},</if>
+         </trim>
+    </insert>
+
+    <update id="updateContractNotify" parameterType="ContractNotify">
+        update contract_notify
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="contractId != null">contract_id = #{contractId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userName != null and userName != ''">user_name = #{userName},</if>
+            <if test="content != null and content != ''">content = #{content},</if>
+            <if test="createdAt != null">created_at = #{createdAt},</if>
+            <if test="notifyStatus != null">notify_status = #{notifyStatus},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteContractNotifyById" parameterType="Long">
+        delete from contract_notify where id = #{id}
+    </delete>
+
+    <delete id="deleteContractNotifyByIds" parameterType="String">
+        delete from contract_notify where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

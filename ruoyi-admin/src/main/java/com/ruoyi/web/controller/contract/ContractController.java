@@ -11,6 +11,9 @@ import com.itextpdf.layout.element.Paragraph;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.system.service.ISysUserService;
 import com.ruoyi.web.domain.Contract;
+import com.ruoyi.web.domain.ContractNotify;
+import com.ruoyi.web.domain.ContractNotifyVo;
+import com.ruoyi.web.service.IContractNotifyService;
 import com.ruoyi.web.service.IContractService;
 import com.ruoyi.web.util.PdfGenerationService;
 import lombok.val;
@@ -61,6 +64,8 @@ public class ContractController extends BaseController
     private ISysUserService userService;
     @Autowired
     private PdfGenerationService pdfGenerationService;
+    @Autowired
+    private IContractNotifyService contractNotifyService;
     /**
      * 查询合同列表
      */
@@ -101,7 +106,20 @@ public class ContractController extends BaseController
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id)
     {
-        return success(contractService.selectContractById(id));
+        ContractNotify contractNotify = new ContractNotify();
+        contractNotify.setContractId(id);
+        List<ContractNotify> contractNotifies = contractNotifyService.selectContractNotifyList(contractNotify);
+        Contract contract = contractService.selectContractById(id);
+        int userId = contract.getCreatedBy();
+        int partyA = contract.getPartyA();
+        int partyB = contract.getPartyB();
+        contract.setCreatedByName(userService.selectUserById((long) userId).getNickName());
+        contract.setPartyAName(userService.selectUserById((long)partyA).getNickName());
+        contract.setPartyBName(userService.selectUserById((long)partyB).getNickName());
+        ContractNotifyVo contractNotifyVo = new ContractNotifyVo();
+        contractNotifyVo.setContract(contract);
+        contractNotifyVo.setNotifyInfoList(contractNotifies);
+        return success(contractNotifyVo);
     }
 
     /**

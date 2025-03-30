@@ -77,6 +77,7 @@ public class ContractApprovalController extends BaseController
     @PostMapping
     public AjaxResult add(@RequestBody ContractApproval contractApproval)
     {
+
         return toAjax(contractApprovalService.insertContractApproval(contractApproval));
     }
 
