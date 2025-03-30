@@ -44,6 +44,7 @@ import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.core.page.TableDataInfo;
 
 import java.io.*;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -286,13 +287,20 @@ public class ContractController extends BaseController
         if (contract == null) {
             return null;
         }
+
+        ClassLoader classLoader = getClass().getClassLoader();
+        URL resource1 = classLoader.getResource("");
+        String classpath = resource1.getPath();
+        if (classpath.startsWith("/")) {
+            classpath = classpath.substring(1);
+        }
         // 2. 生成 PDF
-        String htmlFilePath = contractPath + "/contract_" + contractId + ".html";
-        String pdfFilePath = contractPath + "/contract_" + contractId + ".pdf";
+        String htmlFilePath = classpath + "static/contract_" + contractId + ".html";
+        String pdfFilePath = classpath + "static/contract_" + contractId + ".pdf";
         saveHtmlToFile(contract.getContent(), htmlFilePath);
         generatePdfFromHtml(htmlFilePath, pdfFilePath);
 
-        return contractPath + "/contract_" + contractId + ".pdf";
+        return "http://localhost:8080" + "/contract_" + contractId + ".pdf";
     }
     /**
      * 调用wkhtmltopdf生成pdf
@@ -307,8 +315,14 @@ public class ContractController extends BaseController
             }
 
             // 2. 生成 PDF
-            String htmlFilePath = contractPath + "/contract_" + contractId + ".html";
-            String pdfFilePath = contractPath + "/contract_" + contractId + ".pdf";
+            ClassLoader classLoader = getClass().getClassLoader();
+            URL resource1 = classLoader.getResource("");
+            String classpath = resource1.getPath();
+            if (classpath.startsWith("/")) {
+                classpath = classpath.substring(1);
+            }
+            String htmlFilePath = classpath + "static/contract_" + contractId + ".html";
+            String pdfFilePath = classpath + "static/contract_" + contractId + ".pdf";
             saveHtmlToFile(contract.getContent(), htmlFilePath);
             generatePdfFromHtml(htmlFilePath, pdfFilePath);
 
