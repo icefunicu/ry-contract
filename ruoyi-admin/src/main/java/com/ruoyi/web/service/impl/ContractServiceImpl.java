@@ -15,7 +15,7 @@ import javax.annotation.Resource;
 
 /**
  * 合同Service业务层处理
- * 
+ *
  * @author ruoyi
  * @date 2025-03-28
  */
@@ -29,7 +29,7 @@ public class ContractServiceImpl implements IContractService
 
     /**
      * 查询合同
-     * 
+     *
      * @param id 合同主键
      * @return 合同
      */
@@ -41,7 +41,7 @@ public class ContractServiceImpl implements IContractService
 
     /**
      * 查询合同列表
-     * 
+     *
      * @param contract 合同
      * @return 合同
      */
@@ -53,7 +53,7 @@ public class ContractServiceImpl implements IContractService
 
     /**
      * 新增合同
-     * 
+     *
      * @param contract 合同
      * @return 结果
      */
@@ -65,7 +65,7 @@ public class ContractServiceImpl implements IContractService
 
     /**
      * 修改合同
-     * 
+     *
      * @param contract 合同
      * @return 结果
      */
@@ -77,7 +77,7 @@ public class ContractServiceImpl implements IContractService
 
     /**
      * 批量删除合同
-     * 
+     *
      * @param ids 需要删除的合同主键
      * @return 结果
      */
@@ -89,7 +89,7 @@ public class ContractServiceImpl implements IContractService
 
     /**
      * 删除合同信息
-     * 
+     *
      * @param id 合同主键
      * @return 结果
      */
@@ -97,6 +97,11 @@ public class ContractServiceImpl implements IContractService
     public int deleteContractById(Long id)
     {
         return contractMapper.deleteContractById(id);
+    }
+
+    @Override
+    public List<Contract> selectContractByPaOrPb(Long userId) {
+        return contractMapper.selectContractByPaOrPb(userId);
     }
 
 }

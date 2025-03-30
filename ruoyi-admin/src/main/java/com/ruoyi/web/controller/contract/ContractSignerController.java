@@ -23,7 +23,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 合同签署Controller
- * 
+ *
  * @author ruoyi
  * @date 2025-03-28
  */
@@ -37,7 +37,7 @@ public class ContractSignerController extends BaseController
     /**
      * 查询合同签署列表
      */
-    @PreAuthorize("@ss.hasPermi('contract:signer:list')")
+
     @GetMapping("/list")
     public TableDataInfo list(ContractSigner contractSigner)
     {
@@ -49,7 +49,7 @@ public class ContractSignerController extends BaseController
     /**
      * 导出合同签署列表
      */
-    @PreAuthorize("@ss.hasPermi('contract:signer:export')")
+
     @Log(title = "合同签署", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, ContractSigner contractSigner)
@@ -62,7 +62,7 @@ public class ContractSignerController extends BaseController
     /**
      * 获取合同签署详细信息
      */
-    @PreAuthorize("@ss.hasPermi('contract:signer:query')")
+
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id)
     {
@@ -72,7 +72,7 @@ public class ContractSignerController extends BaseController
     /**
      * 新增合同签署
      */
-    @PreAuthorize("@ss.hasPermi('contract:signer:add')")
+
     @Log(title = "合同签署", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody ContractSigner contractSigner)
@@ -83,7 +83,7 @@ public class ContractSignerController extends BaseController
     /**
      * 修改合同签署
      */
-    @PreAuthorize("@ss.hasPermi('contract:signer:edit')")
+
     @Log(title = "合同签署", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody ContractSigner contractSigner)
@@ -95,7 +95,7 @@ public class ContractSignerController extends BaseController
     /**
      * 删除合同签署
      */
-    @PreAuthorize("@ss.hasPermi('contract:signer:remove')")
+
     @Log(title = "合同签署", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids)

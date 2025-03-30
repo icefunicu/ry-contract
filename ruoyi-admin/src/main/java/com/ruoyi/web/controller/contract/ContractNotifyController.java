@@ -23,7 +23,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 留言Controller
- * 
+ *
  * @author ruoyi
  * @date 2025-03-30
  */
@@ -37,7 +37,7 @@ public class ContractNotifyController extends BaseController
     /**
      * 查询留言列表
      */
-    @PreAuthorize("@ss.hasPermi('notify:list')")
+
     @GetMapping("/list")
     public TableDataInfo list(ContractNotify contractNotify)
     {
@@ -49,7 +49,7 @@ public class ContractNotifyController extends BaseController
     /**
      * 导出留言列表
      */
-    @PreAuthorize("@ss.hasPermi('notify:export')")
+
     @Log(title = "留言", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, ContractNotify contractNotify)
@@ -62,7 +62,7 @@ public class ContractNotifyController extends BaseController
     /**
      * 获取留言详细信息
      */
-    @PreAuthorize("@ss.hasPermi('notify:query')")
+
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id)
     {
@@ -72,7 +72,7 @@ public class ContractNotifyController extends BaseController
     /**
      * 新增留言
      */
-    @PreAuthorize("@ss.hasPermi('notify:add')")
+
     @Log(title = "留言", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody ContractNotify contractNotify)
@@ -83,7 +83,7 @@ public class ContractNotifyController extends BaseController
     /**
      * 修改留言
      */
-    @PreAuthorize("@ss.hasPermi('notify:edit')")
+
     @Log(title = "留言", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody ContractNotify contractNotify)
@@ -94,7 +94,7 @@ public class ContractNotifyController extends BaseController
     /**
      * 删除留言
      */
-    @PreAuthorize("@ss.hasPermi('notify:remove')")
+
     @Log(title = "留言", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids)

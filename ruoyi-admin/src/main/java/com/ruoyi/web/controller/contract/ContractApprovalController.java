@@ -37,7 +37,7 @@ public class ContractApprovalController extends BaseController
     /**
      * 查询合同签署流程列表
      */
-    @PreAuthorize("@ss.hasPermi('contract:approval:list')")
+
     @GetMapping("/list")
     public TableDataInfo list(ContractApproval contractApproval)
     {
@@ -50,7 +50,7 @@ public class ContractApprovalController extends BaseController
     /**
      * 导出合同签署流程列表
      */
-    @PreAuthorize("@ss.hasPermi('contract:approval:export')")
+
     @Log(title = "合同签署流程", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, ContractApproval contractApproval)
@@ -63,7 +63,7 @@ public class ContractApprovalController extends BaseController
     /**
      * 获取合同签署流程详细信息
      */
-    @PreAuthorize("@ss.hasPermi('contract:approval:query')")
+
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id)
     {
@@ -73,7 +73,7 @@ public class ContractApprovalController extends BaseController
     /**
      * 新增合同签署流程
      */
-    @PreAuthorize("@ss.hasPermi('contract:approval:add')")
+
     @Log(title = "合同签署流程", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody ContractApproval contractApproval)
@@ -85,7 +85,7 @@ public class ContractApprovalController extends BaseController
     /**
      * 修改合同签署流程
      */
-    @PreAuthorize("@ss.hasPermi('contract:approval:edit')")
+
     @Log(title = "合同签署流程", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody ContractApproval contractApproval)
@@ -96,7 +96,7 @@ public class ContractApprovalController extends BaseController
     /**
      * 删除合同签署流程
      */
-    @PreAuthorize("@ss.hasPermi('contract:approval:remove')")
+
     @Log(title = "合同签署流程", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids)

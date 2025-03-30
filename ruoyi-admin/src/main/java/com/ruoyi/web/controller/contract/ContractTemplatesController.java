@@ -40,7 +40,7 @@ public class ContractTemplatesController extends BaseController
     /**
      * 查询合同模板列表
      */
-    @PreAuthorize("@ss.hasPermi('contract:templates:list')")
+
     @GetMapping("/list")
     public TableDataInfo list(ContractTemplates contractTemplates)
     {
@@ -52,7 +52,7 @@ public class ContractTemplatesController extends BaseController
     /**
      * 导出合同模板列表
      */
-    @PreAuthorize("@ss.hasPermi('contract:templates:export')")
+
     @Log(title = "合同模板", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, ContractTemplates contractTemplates)
@@ -65,7 +65,7 @@ public class ContractTemplatesController extends BaseController
     /**
      * 获取合同模板详细信息
      */
-    @PreAuthorize("@ss.hasPermi('contract:templates:query')")
+
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id)
     {
@@ -75,7 +75,7 @@ public class ContractTemplatesController extends BaseController
     /**
      * 新增合同模板
      */
-    @PreAuthorize("@ss.hasPermi('contract:templates:add')")
+
     @Log(title = "合同模板", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody ContractTemplates contractTemplates)
@@ -86,7 +86,7 @@ public class ContractTemplatesController extends BaseController
     /**
      * 修改合同模板
      */
-    @PreAuthorize("@ss.hasPermi('contract:templates:edit')")
+
     @Log(title = "合同模板", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody ContractTemplates contractTemplates)
@@ -97,7 +97,7 @@ public class ContractTemplatesController extends BaseController
     /**
      * 删除合同模板
      */
-    @PreAuthorize("@ss.hasPermi('contract:templates:remove')")
+
     @Log(title = "合同模板", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids)

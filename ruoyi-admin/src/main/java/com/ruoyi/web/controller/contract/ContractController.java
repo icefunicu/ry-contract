@@ -69,12 +69,25 @@ public class ContractController extends BaseController
     /**
      * 查询合同列表
      */
-    @PreAuthorize("@ss.hasPermi('contract:list')")
+
     @GetMapping("/list")
     public TableDataInfo list(Contract contract)
     {
         startPage();
-        List<Contract> list = contractService.selectContractList(contract);
+        // 判断用户身份，如果是管理员返回所有数据，如果是普通用户返回自己的数据
+        if (getUserId()==1) {
+            List<Contract> list = contractService.selectContractList(contract);
+            for(Contract c:list){
+                int userId = c.getCreatedBy();
+                int partyA = c.getPartyA();
+                int partyB = c.getPartyB();
+                c.setCreatedByName(userService.selectUserById((long) userId).getNickName());
+                c.setPartyAName(userService.selectUserById((long)partyA).getNickName());
+                c.setPartyBName(userService.selectUserById((long)partyB).getNickName());
+            }
+            return getDataTable(list);
+        }
+        List<Contract> list = contractService.selectContractByPaOrPb(getUserId());
         for(Contract c:list){
             int userId = c.getCreatedBy();
             int partyA = c.getPartyA();
@@ -89,7 +102,7 @@ public class ContractController extends BaseController
     /**
      * 导出合同列表
      */
-    @PreAuthorize("@ss.hasPermi('contract:export')")
+
     @Log(title = "合同", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, Contract contract)
@@ -102,7 +115,7 @@ public class ContractController extends BaseController
     /**
      * 获取合同详细信息
      */
-    @PreAuthorize("@ss.hasPermi('contract:query')")
+
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id)
     {
@@ -125,7 +138,7 @@ public class ContractController extends BaseController
     /**
      * 新增合同
      */
-    @PreAuthorize("@ss.hasPermi('contract:add')")
+
     @Log(title = "合同", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody Contract contract, HttpServletRequest request)
@@ -155,7 +168,7 @@ public class ContractController extends BaseController
     /**
      * 删除合同
      */
-    @PreAuthorize("@ss.hasPermi('contract:remove')")
+
     @Log(title = "合同", businessType = BusinessType.DELETE)
     @DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids)
