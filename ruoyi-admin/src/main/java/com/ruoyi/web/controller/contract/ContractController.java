@@ -267,7 +267,7 @@ public class ContractController extends BaseController
      *  通过合同，更新合同状态为待审批
      * */
     @PostMapping("/pass")
-    public AjaxResult pass(@RequestBody Contract contract){
+    public AjaxResult pass(@RequestBody Contract contract) throws IOException, InterruptedException {
         contract.setStatus("待审批");
         ContractApproval contractApproval = new ContractApproval();
         contractApproval.setContractId((long) contract.getId());
@@ -275,10 +275,25 @@ public class ContractController extends BaseController
         contractApproval.setApproverId(103L);
         contractApproval.setStatus("待审批");
         contractApproval.setApprovedTime(new Date());
+
         contractApprovalService.insertContractApproval(contractApproval);
+        contract.setFilePath(generatePdfPath(contract.getId()));
         return success(contractService.updateContract(contract));
     }
 
+    private String generatePdfPath(int contractId) throws IOException, InterruptedException {
+        Contract contract = contractService.selectContractById((long) contractId);
+        if (contract == null) {
+            return null;
+        }
+        // 2. 生成 PDF
+        String htmlFilePath = contractPath + "/contract_" + contractId + ".html";
+        String pdfFilePath = contractPath + "/contract_" + contractId + ".pdf";
+        saveHtmlToFile(contract.getContent(), htmlFilePath);
+        generatePdfFromHtml(htmlFilePath, pdfFilePath);
+
+        return contractPath + "/contract_" + contractId + ".pdf";
+    }
     /**
      * 调用wkhtmltopdf生成pdf
      */

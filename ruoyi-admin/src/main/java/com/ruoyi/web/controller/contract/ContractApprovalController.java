@@ -4,6 +4,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.system.service.ISysUserService;
+import com.ruoyi.web.domain.Contract;
 import com.ruoyi.web.service.IContractService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,7 @@ public class ContractApprovalController extends BaseController
             Long contractId = approval.getContractId();
             approval.setApproverName(userService.selectUserById(approverId).getUserName());
             approval.setContractTitle(contractService.selectContractById(contractId).getTitle());
+            approval.setContract(contractService.selectContractById(contractId));
         }
         return getDataTable(list);
     }
@@ -102,6 +104,30 @@ public class ContractApprovalController extends BaseController
     public AjaxResult edit(@RequestBody ContractApproval contractApproval)
     {
         return toAjax(contractApprovalService.updateContractApproval(contractApproval));
+    }
+
+    /**
+     *   通过审核
+     * */
+    @PutMapping("/approve")
+    public AjaxResult approve(@RequestBody ContractApproval contractApproval) {
+        ContractApproval approval = contractApprovalService.selectContractApprovalById(contractApproval.getId());
+        approval.setStatus("已通过");
+        Long contractId = approval.getContractId();
+        Contract contract = contractService.selectContractById(contractId);
+        contract.setStatus("待签字");
+        contractService.updateContract(contract);
+        return toAjax(contractApprovalService.updateContractApproval(approval));
+    }
+
+    /**
+     * 驳回审核
+     * */
+    @PutMapping("/reject")
+    public AjaxResult reject(@RequestBody ContractApproval contractApproval) {
+        ContractApproval approval = contractApprovalService.selectContractApprovalById(contractApproval.getId());
+        approval.setStatus("已驳回");
+        return toAjax(contractApprovalService.updateContractApproval(approval));
     }
 
     /**

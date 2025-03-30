@@ -44,4 +44,6 @@ public class ContractApproval extends BaseEntity
 
     private String approverName;
     private String contractTitle;
+
+    private Contract contract;
 }
