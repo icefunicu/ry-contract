@@ -300,7 +300,7 @@ public class ContractController extends BaseController
         saveHtmlToFile(contract.getContent(), htmlFilePath);
         generatePdfFromHtml(htmlFilePath, pdfFilePath);
 
-        return "http://localhost:8080" + "/contract_" + contractId + ".pdf";
+        return "http://localhost:8080/static" + "/contract_" + contractId + ".pdf";
     }
     /**
      * 调用wkhtmltopdf生成pdf

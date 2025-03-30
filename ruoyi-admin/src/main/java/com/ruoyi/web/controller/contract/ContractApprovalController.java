@@ -80,7 +80,9 @@ public class ContractApprovalController extends BaseController
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id)
     {
-        return success(contractApprovalService.selectContractApprovalById(id));
+        ContractApproval contractApproval = contractApprovalService.selectContractApprovalById(id);
+        contractApproval.setContract(contractService.selectContractById(contractApproval.getContractId()));
+        return success(contractApproval);
     }
 
     /**
