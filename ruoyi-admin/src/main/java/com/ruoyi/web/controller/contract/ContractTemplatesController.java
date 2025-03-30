@@ -2,18 +2,14 @@ package com.ruoyi.web.controller.contract;
 
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
-
 import fr.opensagres.poi.xwpf.converter.xhtml.Base64EmbedImgManager;
 import fr.opensagres.poi.xwpf.converter.xhtml.XHTMLConverter;
 import fr.opensagres.poi.xwpf.converter.xhtml.XHTMLOptions;
 import org.apache.poi.xwpf.usermodel.*;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 合同模板Controller
- * 
+ *
  * @author ruoyi
  * @date 2025-03-28
  */

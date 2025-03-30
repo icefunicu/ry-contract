@@ -50,7 +50,7 @@ import java.util.List;
 
 /**
  * 合同Controller
- * 
+ *
  * @author ruoyi
  * @date 2025-03-28
  */
@@ -149,7 +149,7 @@ public class ContractController extends BaseController
      * */
     @PostMapping("/submit")
     public AjaxResult submit(@RequestBody Contract contract){
-        contract.setStatus("签署中");
+        contract.setStatus("待查看");
         return success(contractService.updateContract(contract));
     }
     /**

@@ -23,7 +23,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 合同签署流程Controller
- * 
+ *
  * @author ruoyi
  * @date 2025-03-28
  */
@@ -42,6 +42,7 @@ public class ContractApprovalController extends BaseController
     public TableDataInfo list(ContractApproval contractApproval)
     {
         startPage();
+
         List<ContractApproval> list = contractApprovalService.selectContractApprovalList(contractApproval);
         return getDataTable(list);
     }
