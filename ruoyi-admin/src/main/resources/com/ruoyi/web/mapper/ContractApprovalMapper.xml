@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.web.mapper.ContractApprovalMapper">
-    
+
     <resultMap type="ContractApproval" id="ContractApprovalResult">
         <result property="id"    column="id"    />
         <result property="contractId"    column="contract_id"    />
@@ -19,7 +19,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectContractApprovalList" parameterType="ContractApproval" resultMap="ContractApprovalResult">
         <include refid="selectContractApprovalVo"/>
-        <where>  
+        <where>
             <if test="contractId != null "> and contract_id = #{contractId}</if>
             <if test="approverId != null "> and approver_id = #{approverId}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
@@ -27,7 +27,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="approvedTime != null "> and approved_time = #{approvedTime}</if>
         </where>
     </select>
-    
+
     <select id="selectContractApprovalById" parameterType="Long" resultMap="ContractApprovalResult">
         <include refid="selectContractApprovalVo"/>
         where id = #{id}
@@ -54,11 +54,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <update id="updateContractApproval" parameterType="ContractApproval">
         update contract_approval
         <trim prefix="SET" suffixOverrides=",">
-            <if test="contractId != null">contract_id = #{contractId},</if>
-            <if test="approverId != null">approver_id = #{approverId},</if>
+            <if test="contractId != null and contractId='' ">contract_id = #{contractId},</if>
+            <if test="approverId != null and approverId='' ">approver_id = #{approverId},</if>
             <if test="status != null and status != ''">status = #{status},</if>
-            <if test="comment != null">comment = #{comment},</if>
-            <if test="approvedTime != null">approved_time = #{approvedTime},</if>
+            <if test="comment != null and comment=''">comment = #{comment},</if>
+            <if test="approvedTime != null and approvedTime=''">approved_time = #{approvedTime},</if>
         </trim>
         where id = #{id}
     </update>
@@ -68,7 +68,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteContractApprovalByIds" parameterType="String">
-        delete from contract_approval where id in 
+        delete from contract_approval where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>

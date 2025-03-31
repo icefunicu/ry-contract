@@ -1,7 +1,6 @@
 package com.ruoyi.web.controller.contract;
 
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.itextpdf.kernel.pdf.PdfDocument;
@@ -18,7 +17,6 @@ import com.ruoyi.web.service.IContractApprovalService;
 import com.ruoyi.web.service.IContractNotifyService;
 import com.ruoyi.web.service.IContractService;
 import com.ruoyi.web.util.PdfGenerationService;
-import lombok.val;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
@@ -27,7 +25,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,13 +39,11 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.core.page.TableDataInfo;
-
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -295,12 +290,12 @@ public class ContractController extends BaseController
             classpath = classpath.substring(1);
         }
         // 2. 生成 PDF
-        String htmlFilePath = classpath + "static/contract_" + contractId + ".html";
-        String pdfFilePath = classpath + "static/contract_" + contractId + ".pdf";
+        String htmlFilePath = classpath + "/contract_" + contractId + ".html";
+        String pdfFilePath = classpath + "/contract_" + contractId + ".pdf";
         saveHtmlToFile(contract.getContent(), htmlFilePath);
         generatePdfFromHtml(htmlFilePath, pdfFilePath);
 
-        return "http://localhost:8080/static" + "/contract_" + contractId + ".pdf";
+        return "http://localhost:8080" + "/contract_" + contractId + ".pdf";
     }
     /**
      * 调用wkhtmltopdf生成pdf
@@ -321,8 +316,8 @@ public class ContractController extends BaseController
             if (classpath.startsWith("/")) {
                 classpath = classpath.substring(1);
             }
-            String htmlFilePath = classpath + "static/contract_" + contractId + ".html";
-            String pdfFilePath = classpath + "static/contract_" + contractId + ".pdf";
+            String htmlFilePath = classpath + "/contract_" + contractId + ".html";
+            String pdfFilePath = classpath + "/contract_" + contractId + ".pdf";
             saveHtmlToFile(contract.getContent(), htmlFilePath);
             generatePdfFromHtml(htmlFilePath, pdfFilePath);
 
