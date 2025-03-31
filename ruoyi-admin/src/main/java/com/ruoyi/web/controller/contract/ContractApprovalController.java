@@ -129,7 +129,7 @@ public class ContractApprovalController extends BaseController
     public AjaxResult reject(@RequestBody ContractApproval contractApproval) {
         ContractApproval approval = contractApprovalService.selectContractApprovalById(contractApproval.getId());
         approval.setStatus("已驳回");
-        Long contractId = contractApproval.getContractId();
+        Long contractId = approval.getContractId();
         Contract contract = contractService.selectContractById(contractId);
         contract.setStatus("待修改");
         contractService.updateContract(contract);
