@@ -238,20 +238,24 @@ public class ContractController extends BaseController
     * */
     @PostMapping("/submitOpinion")
     public AjaxResult submitOpinion(@RequestBody Contract contract){
+        Long contractId = (long) contract.getId();
+        String opinion = contract.getOpinion();
+        contract = contractService.selectContractById(contractId);
         if(contract.getCreatedBy() == getUserId()){
             ContractNotify contractNotify = new ContractNotify();
-            contractNotify.setContractId((long) contract.getId());
-            contractNotify.setContent(contract.getOpinion());
+            contractNotify.setContractId(contractId);
+            contractNotify.setContent(opinion);
             contractNotify.setNotifyStatus("未处理");
             contractNotify.setUserId(getUserId());
             contractNotify.setUserName(userService.selectUserById(getUserId()).getNickName());
             contractNotifyService.insertContractNotify(contractNotify);
             contractService.updateContract(contract);
+            return success();
         }
         contract.setStatus("待修改");
         ContractNotify contractNotify = new ContractNotify();
-        contractNotify.setContractId((long) contract.getId());
-        contractNotify.setContent(contract.getOpinion());
+        contractNotify.setContractId(contractId);
+        contractNotify.setContent(opinion);
         contractNotify.setNotifyStatus("未处理");
         contractNotify.setUserId(getUserId());
         contractNotify.setUserName(userService.selectUserById(getUserId()).getNickName());
@@ -290,12 +294,13 @@ public class ContractController extends BaseController
             classpath = classpath.substring(1);
         }
         // 2. 生成 PDF
-        String htmlFilePath = classpath + "/contract_" + contractId + ".html";
-        String pdfFilePath = classpath + "/contract_" + contractId + ".pdf";
+        String htmlFilePath = classpath + "static/contract_" + contractId + ".html";
+        String pdfFilePath = classpath + "static/contract_" + contractId + ".pdf";
+
         saveHtmlToFile(contract.getContent(), htmlFilePath);
         generatePdfFromHtml(htmlFilePath, pdfFilePath);
 
-        return "http://localhost:8080" + "/contract_" + contractId + ".pdf";
+        return "http://localhost:8080/" + "contract_" + contractId + ".pdf";
     }
     /**
      * 调用wkhtmltopdf生成pdf
@@ -316,8 +321,8 @@ public class ContractController extends BaseController
             if (classpath.startsWith("/")) {
                 classpath = classpath.substring(1);
             }
-            String htmlFilePath = classpath + "/contract_" + contractId + ".html";
-            String pdfFilePath = classpath + "/contract_" + contractId + ".pdf";
+            String htmlFilePath = classpath + "contract_" + contractId + ".html";
+            String pdfFilePath = classpath + "contract_" + contractId + ".pdf";
             saveHtmlToFile(contract.getContent(), htmlFilePath);
             generatePdfFromHtml(htmlFilePath, pdfFilePath);
 
