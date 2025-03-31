@@ -84,7 +84,8 @@ public class SingedController {
     @RequestMapping(value = "/sign",method = RequestMethod.POST)
     public Result<SignResponse> sign(@RequestBody SignRequest request){
 
-        String fileName = "开源工具版说明.pdf" ;
+        String fileName = "开源工具版说明.pdf";
+
         byte[] signFileBytes = null ;
         byte[] entSealBytes = null ;
         byte[] personalBytes = null ;

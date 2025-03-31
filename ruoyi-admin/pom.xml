@@ -113,7 +113,7 @@
             <artifactId>kaifangqian-sdk</artifactId>
             <version>1.1</version>
             <scope>system</scope>
-            <systemPath>D:/language_pakge/apache-maven-3.9.2/mvn_repo/org/resrun/kaifangqian-sdk/1.1/kaifangqian-sdk-1.1.jar</systemPath>
+            <systemPath>${project.basedir}/src/main/resources/static/kaifangqian-sdk-1.1.jar</systemPath>
         </dependency>
         <dependency>
             <!-- 版本根据自身spring-boot而定 -->
