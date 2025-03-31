@@ -4,6 +4,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.web.domain.*;
+import com.ruoyi.web.service.IContractService;
 import com.ruoyi.web.service.impl.EntSealClipService;
 import io.swagger.annotations.ApiOperation;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,8 @@ import com.ruoyi.common.core.page.TableDataInfo;
 public class ContractSignerController extends BaseController {
     @Autowired
     private IContractSignerService contractSignerService;
+    @Autowired
+    private IContractService contractService;
 
     /**
      * 查询合同签署列表
@@ -42,6 +45,11 @@ public class ContractSignerController extends BaseController {
 
         startPage();
         List<ContractSigner> list = contractSignerService.selectContractSignerList(contractSigner);
+        for(ContractSigner cs : list){
+            Long ContractId = cs.getContractId();
+            Contract contract = contractService.selectContractById(ContractId);
+            cs.setContract(contract);
+        }
         return getDataTable(list);
     }
 

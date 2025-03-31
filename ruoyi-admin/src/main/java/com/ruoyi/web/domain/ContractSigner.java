@@ -44,5 +44,7 @@ public class ContractSigner extends BaseEntity
 
     private String signerRole;
 
+    private Contract contract;
+
 
 }
