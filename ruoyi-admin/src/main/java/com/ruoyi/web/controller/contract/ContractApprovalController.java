@@ -5,7 +5,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.system.service.ISysUserService;
 import com.ruoyi.web.domain.Contract;
+import com.ruoyi.web.domain.ContractSigner;
 import com.ruoyi.web.service.IContractService;
+import com.ruoyi.web.service.IContractSignerService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,6 +43,8 @@ public class ContractApprovalController extends BaseController
     private ISysUserService userService;
     @Autowired
     private IContractService contractService;
+    @Autowired
+    private IContractSignerService contractSignerService;
     /**
      * 查询合同签署流程列表
      */
@@ -119,6 +123,18 @@ public class ContractApprovalController extends BaseController
         Contract contract = contractService.selectContractById(contractId);
         contract.setStatus("待签字");
         contractService.updateContract(contract);
+        // 向签署表中插入数据
+        ContractSigner contractSignerJ = new ContractSigner();
+        contractSignerJ.setContractId(contractId);
+        contractSignerJ.setUserId((long) contract.getPartyA());
+        contractSignerJ.setSigned(0);
+
+        ContractSigner contractSignerY = new ContractSigner();
+        contractSignerY.setContractId(contractId);
+        contractSignerY.setUserId((long) contract.getPartyB());
+        contractSignerY.setSigned(0);
+        contractSignerService.insertContractSigner(contractSignerJ);
+        contractSignerService.insertContractSigner(contractSignerY);
         return toAjax(contractApprovalService.updateContractApproval(approval));
     }
 

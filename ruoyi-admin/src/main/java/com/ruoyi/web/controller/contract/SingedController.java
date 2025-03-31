@@ -103,7 +103,7 @@ public class SingedController  extends BaseController {
             classpath = classpath.substring(1);
         }
 
-        String fileName = classpath + "contract_" + contractId + ".pdf";
+        String fileName = classpath + "static/contract_" + contractId + ".pdf";
 
         byte[] signFileBytes = null ;
         byte[] entSealBytes = null ;

@@ -321,8 +321,8 @@ public class ContractController extends BaseController
             if (classpath.startsWith("/")) {
                 classpath = classpath.substring(1);
             }
-            String htmlFilePath = classpath + "contract_" + contractId + ".html";
-            String pdfFilePath = classpath + "contract_" + contractId + ".pdf";
+            String htmlFilePath = classpath + "static/contract_" + contractId + ".html";
+            String pdfFilePath = classpath + "static/contract_" + contractId + ".pdf";
             saveHtmlToFile(contract.getContent(), htmlFilePath);
             generatePdfFromHtml(htmlFilePath, pdfFilePath);
 
