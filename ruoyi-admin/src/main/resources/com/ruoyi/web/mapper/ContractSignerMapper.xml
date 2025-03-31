@@ -37,7 +37,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectContractSignerByContractIdAndUserId" resultType="com.ruoyi.web.domain.ContractSigner">
         select * from contract_signer where contract_id = #{contractId} and user_id = #{userId}
     </select>
-
+    <select id="selectContractSignerListByUserId" resultType="com.ruoyi.web.domain.ContractSigner">
+        select * from contract_signer where user_id = #{userId}
+    </select>
     <insert id="insertContractSigner" parameterType="ContractSigner" useGeneratedKeys="true" keyProperty="id">
         insert into contract_signer
         <trim prefix="(" suffix=")" suffixOverrides=",">

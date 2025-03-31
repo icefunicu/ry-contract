@@ -64,4 +64,6 @@ public interface ContractSignerMapper
     * */
 
     public ContractSigner selectContractSignerByContractIdAndUserId(@Param("contractId") Long contractId, @Param("userId") Long userId);
+
+    List<ContractSigner> selectContractSignerListByUserId(Long userId);
 }

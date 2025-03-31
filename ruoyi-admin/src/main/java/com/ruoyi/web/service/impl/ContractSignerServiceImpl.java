@@ -98,4 +98,8 @@ public class ContractSignerServiceImpl implements IContractSignerService
     public ContractSigner selectContractSignerByContractIdAndUserId(Long contractId, Long userId) {
         return contractSignerMapper.selectContractSignerByContractIdAndUserId(contractId, userId);
     }
+    @Override
+    public List<ContractSigner> selectContractSignerListByUserId(Long userId){
+        return contractSignerMapper.selectContractSignerListByUserId(userId);
+    }
 }

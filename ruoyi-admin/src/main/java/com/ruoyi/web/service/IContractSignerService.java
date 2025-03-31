@@ -64,4 +64,8 @@ public interface IContractSignerService
      * @return 结果
      */
     public int deleteContractSignerById(Long id);
+    /*
+    * 根据用户id返回合同签署列表
+    * */
+    public List<ContractSigner> selectContractSignerListByUserId(Long userId);
 }

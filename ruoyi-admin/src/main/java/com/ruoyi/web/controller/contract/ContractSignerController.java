@@ -3,6 +3,7 @@ package com.ruoyi.web.controller.contract;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ruoyi.system.service.ISysUserService;
 import com.ruoyi.web.domain.*;
 import com.ruoyi.web.service.IContractService;
 import com.ruoyi.web.service.impl.EntSealClipService;
@@ -35,7 +36,8 @@ public class ContractSignerController extends BaseController {
     private IContractSignerService contractSignerService;
     @Autowired
     private IContractService contractService;
-
+    @Autowired
+    private ISysUserService userService;
     /**
      * 查询合同签署列表
      */
@@ -44,13 +46,32 @@ public class ContractSignerController extends BaseController {
     public TableDataInfo list(ContractSigner contractSigner) {
 
         startPage();
-        List<ContractSigner> list = contractSignerService.selectContractSignerList(contractSigner);
-        for(ContractSigner cs : list){
-            Long ContractId = cs.getContractId();
-            Contract contract = contractService.selectContractById(ContractId);
-            cs.setContract(contract);
+        // 判断用户身份，如果是管理员返回所有数据，如果是普通用户返回自己的数据
+        if(getUserId()==1){
+            List<ContractSigner> list = contractSignerService.selectContractSignerList(contractSigner);
+
+            for(ContractSigner cs : list){
+                Long ContractId = cs.getContractId();
+                Contract contract = contractService.selectContractById(ContractId);
+                cs.setContract(contract);
+            }
+            return getDataTable(list);
+        }else{
+            List<ContractSigner> list = contractSignerService.selectContractSignerListByUserId(getUserId());
+            for(ContractSigner cs : list){
+                Long ContractId = cs.getContractId();
+                Contract contract = contractService.selectContractById(ContractId);
+                int partyAId = contract.getPartyA();
+                int partyBId = contract.getPartyB();
+                long createdById = contract.getCreatedBy();
+
+                contract.setCreatedByName(userService.selectUserById(createdById).getUserName());
+                contract.setPartyAName(userService.selectUserById((long) partyAId).getUserName());
+                contract.setPartyBName(userService.selectUserById((long) partyBId).getUserName());
+                cs.setContract(contract);
+            }
+            return getDataTable(list);
         }
-        return getDataTable(list);
     }
 
     /**
