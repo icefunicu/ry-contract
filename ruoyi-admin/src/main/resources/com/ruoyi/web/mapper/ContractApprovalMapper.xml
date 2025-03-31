@@ -25,7 +25,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="comment != null  and comment != ''"> and comment = #{comment}</if>
             <if test="approvedTime != null "> and approved_time = #{approvedTime}</if>
-        </where>
+        </where> ORDER BY approved_time DESC
     </select>
 
     <select id="selectContractApprovalById" parameterType="Long" resultMap="ContractApprovalResult">

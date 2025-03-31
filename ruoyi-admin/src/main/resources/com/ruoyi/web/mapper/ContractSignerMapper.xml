@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.web.mapper.ContractSignerMapper">
-    
+
     <resultMap type="ContractSigner" id="ContractSignerResult">
         <result property="id"    column="id"    />
         <result property="contractId"    column="contract_id"    />
@@ -20,7 +20,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectContractSignerList" parameterType="ContractSigner" resultMap="ContractSignerResult">
         <include refid="selectContractSignerVo"/>
-        <where>  
+        <where>
             <if test="contractId != null "> and contract_id = #{contractId}</if>
             <if test="userId != null "> and user_id = #{userId}</if>
             <if test="signed != null "> and signed = #{signed}</if>
@@ -29,10 +29,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="signerRole != null  and signerRole != ''"> and signer_role = #{signerRole}</if>
         </where>
     </select>
-    
+
     <select id="selectContractSignerById" parameterType="Long" resultMap="ContractSignerResult">
         <include refid="selectContractSignerVo"/>
         where id = #{id}
+    </select>
+    <select id="selectContractSignerByContractIdAndUserId" resultType="com.ruoyi.web.domain.ContractSigner">
+        select * from contract_signer where contract_id = #{contractId} and user_id = #{userId}
     </select>
 
     <insert id="insertContractSigner" parameterType="ContractSigner" useGeneratedKeys="true" keyProperty="id">
@@ -73,7 +76,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteContractSignerByIds" parameterType="String">
-        delete from contract_signer where id in 
+        delete from contract_signer where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>

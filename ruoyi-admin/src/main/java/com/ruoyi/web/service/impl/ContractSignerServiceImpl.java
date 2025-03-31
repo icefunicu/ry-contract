@@ -9,19 +9,19 @@ import com.ruoyi.web.service.IContractSignerService;
 
 /**
  * 合同签署Service业务层处理
- * 
+ *
  * @author ruoyi
  * @date 2025-03-28
  */
 @Service
-public class ContractSignerServiceImpl implements IContractSignerService 
+public class ContractSignerServiceImpl implements IContractSignerService
 {
     @Autowired
     private ContractSignerMapper contractSignerMapper;
 
     /**
      * 查询合同签署
-     * 
+     *
      * @param id 合同签署主键
      * @return 合同签署
      */
@@ -33,7 +33,7 @@ public class ContractSignerServiceImpl implements IContractSignerService
 
     /**
      * 查询合同签署列表
-     * 
+     *
      * @param contractSigner 合同签署
      * @return 合同签署
      */
@@ -45,7 +45,7 @@ public class ContractSignerServiceImpl implements IContractSignerService
 
     /**
      * 新增合同签署
-     * 
+     *
      * @param contractSigner 合同签署
      * @return 结果
      */
@@ -57,7 +57,7 @@ public class ContractSignerServiceImpl implements IContractSignerService
 
     /**
      * 修改合同签署
-     * 
+     *
      * @param contractSigner 合同签署
      * @return 结果
      */
@@ -69,7 +69,7 @@ public class ContractSignerServiceImpl implements IContractSignerService
 
     /**
      * 批量删除合同签署
-     * 
+     *
      * @param ids 需要删除的合同签署主键
      * @return 结果
      */
@@ -81,7 +81,7 @@ public class ContractSignerServiceImpl implements IContractSignerService
 
     /**
      * 删除合同签署信息
-     * 
+     *
      * @param id 合同签署主键
      * @return 结果
      */
@@ -89,5 +89,13 @@ public class ContractSignerServiceImpl implements IContractSignerService
     public int deleteContractSignerById(Long id)
     {
         return contractSignerMapper.deleteContractSignerById(id);
+    }
+
+    /**
+     * 根据合同id和userid查询合同
+     * */
+    @Override
+    public ContractSigner selectContractSignerByContractIdAndUserId(Long contractId, Long userId) {
+        return contractSignerMapper.selectContractSignerByContractIdAndUserId(contractId, userId);
     }
 }

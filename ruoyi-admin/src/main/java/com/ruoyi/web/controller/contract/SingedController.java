@@ -1,6 +1,9 @@
 package com.ruoyi.web.controller.contract;
 
+import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.web.domain.*;
+import com.ruoyi.web.service.IContractService;
+import com.ruoyi.web.service.IContractSignerService;
 import com.ruoyi.web.service.impl.EntSealClipService;
 import io.swagger.annotations.ApiOperation;
 import org.resrun.sdk.service.CalculatePositionService;
@@ -23,13 +26,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/openSign")
-public class SingedController {
+public class SingedController  extends BaseController {
 
     @Autowired
     private EntSealClipService entSealClipService ;
@@ -39,6 +43,10 @@ public class SingedController {
     private SDKService sdkService;
     @Autowired
     private CalculatePositionService calculatePositionService ;
+    @Autowired
+    private IContractService contractService;
+    @Autowired
+    private IContractSignerService contractSignerService;
 
     @ApiOperation("生成企业签章-上传生成")
     @RequestMapping(value = "/clip/seal",method = RequestMethod.POST)
@@ -83,8 +91,21 @@ public class SingedController {
     @ApiOperation("签署")
     @RequestMapping(value = "/sign",method = RequestMethod.POST)
     public Result<SignResponse> sign(@RequestBody SignRequest request){
+        int contractId = request.getContractId();
+        Long userId = getUserId();
 
-        String fileName = "开源工具版说明.pdf";
+        Contract contract = contractService.selectContractById((long) contractId);
+        if(contract == null){
+            return Result.error("合同不存在",null);
+        }
+        ClassLoader classLoader = getClass().getClassLoader();
+        URL resource1 = classLoader.getResource("");
+        String classpath = resource1.getPath();
+        if (classpath.startsWith("/")) {
+            classpath = classpath.substring(1);
+        }
+
+        String fileName = classpath + "contract_" + contractId + ".pdf";
 
         byte[] signFileBytes = null ;
         byte[] entSealBytes = null ;
@@ -148,9 +169,10 @@ public class SingedController {
             DocumentSignRequest signRequest = new DocumentSignRequest();
             signRequest.setUniqueCode(UUID.randomUUID().toString());
             signRequest.setSignType(SDKSignTypeEnum.POSITION.getCode());
+            // 允许单方完成签署，不再要求双方都必须签署
             if((request.getEntPositionList() == null || request.getEntPositionList().size() == 0 ) &&
                     (request.getPersonalPositionList() == null || request.getPersonalPositionList().size() == 0)){
-                return Result.error("签署失败",null);
+                return Result.error("签署失败，至少需要一方进行签署",null);
             }
             //计算企业签署位置
             if(request.getEntPositionList() != null && request.getEntPositionList().size() > 0){
@@ -211,9 +233,10 @@ public class SingedController {
             }
 
         }else if(SignTypeEnum.KEYWORDS.getCode().equals(request.getSignType())){
+            // 允许单方完成签署，不再要求双方都必须签署
             if((request.getEntKeyword() == null || request.getEntKeyword().length() == 0 ) &&
                     (request.getPersonalKeyword() == null || request.getPersonalKeyword().length() == 0)){
-                return Result.error("签署失败",null);
+                return Result.error("签署失败，至少需要一方设置关键字进行签署",null);
             }
             DocumentSignRequest signRequest = new DocumentSignRequest();
             signRequest.setUniqueCode(UUID.randomUUID().toString());
@@ -255,9 +278,48 @@ public class SingedController {
             }
         }
 
+        // 将签署后的文件写回原始文件路径，覆盖原文件
+        try {
+            // 获取原始文件的完整路径
+            java.io.File file = new java.io.File(fileName);
+            // 确保目录存在
+            if (!file.getParentFile().exists()) {
+                file.getParentFile().mkdirs();
+            }
+            // 写入文件
+            java.io.FileOutputStream fos = new java.io.FileOutputStream(file);
+            fos.write(operationByte);
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            // 即使写入失败，也继续返回签署结果
+        }
+        ContractSigner contractSigner = contractSignerService.selectContractSignerByContractIdAndUserId((long) contractId, userId);
+
+        contractSigner.setSigned(1);
+        contractSigner.setSignImage("http://localhost:8080/contract_" + contractId + ".pdf");
+        contractSignerService.updateContractSigner(contractSigner);
+
+        // 判断是否双方都已签署，如果是，则将合同状态改为已签署
+        ContractSigner contractSigner1 = new ContractSigner();
+        contractSigner1.setContractId((long) contractId);
+        List<ContractSigner> contractSigners = contractSignerService.selectContractSignerList(contractSigner1);
+        boolean allSigned = true;
+        for (ContractSigner signer : contractSigners) {
+            if (signer.getSigned() == 0) {
+                allSigned = false;
+                break;
+            }
+        }
+        if (allSigned) {
+            contract.setStatus("已签署");
+            contractService.updateContract(contract);
+        }
+
         String encode = Base64.encode(operationByte);
         SignResponse response = new SignResponse();
         response.setSignFile(encode);
+
         return Result.OK(response);
 
     }

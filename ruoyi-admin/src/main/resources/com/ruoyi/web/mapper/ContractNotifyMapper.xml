@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.web.mapper.ContractNotifyMapper">
-    
+
     <resultMap type="ContractNotify" id="ContractNotifyResult">
         <result property="id"    column="id"    />
         <result property="contractId"    column="contract_id"    />
@@ -20,7 +20,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectContractNotifyList" parameterType="ContractNotify" resultMap="ContractNotifyResult">
         <include refid="selectContractNotifyVo"/>
-        <where>  
+        <where>
             <if test="contractId != null "> and contract_id = #{contractId}</if>
             <if test="userId != null "> and user_id = #{userId}</if>
             <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
@@ -29,7 +29,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="notifyStatus != null  and notifyStatus != ''"> and notify_status = #{notifyStatus}</if>
         </where>
     </select>
-    
+
     <select id="selectContractNotifyById" parameterType="Long" resultMap="ContractNotifyResult">
         <include refid="selectContractNotifyVo"/>
         where id = #{id}
@@ -73,7 +73,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteContractNotifyByIds" parameterType="String">
-        delete from contract_notify where id in 
+        delete from contract_notify where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>

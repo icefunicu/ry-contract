@@ -5,15 +5,15 @@ import com.ruoyi.web.domain.ContractSigner;
 
 /**
  * 合同签署Mapper接口
- * 
+ *
  * @author ruoyi
  * @date 2025-03-28
  */
-public interface ContractSignerMapper 
+public interface ContractSignerMapper
 {
     /**
      * 查询合同签署
-     * 
+     *
      * @param id 合同签署主键
      * @return 合同签署
      */
@@ -21,7 +21,7 @@ public interface ContractSignerMapper
 
     /**
      * 查询合同签署列表
-     * 
+     *
      * @param contractSigner 合同签署
      * @return 合同签署集合
      */
@@ -29,7 +29,7 @@ public interface ContractSignerMapper
 
     /**
      * 新增合同签署
-     * 
+     *
      * @param contractSigner 合同签署
      * @return 结果
      */
@@ -37,7 +37,7 @@ public interface ContractSignerMapper
 
     /**
      * 修改合同签署
-     * 
+     *
      * @param contractSigner 合同签署
      * @return 结果
      */
@@ -45,7 +45,7 @@ public interface ContractSignerMapper
 
     /**
      * 删除合同签署
-     * 
+     *
      * @param id 合同签署主键
      * @return 结果
      */
@@ -53,9 +53,13 @@ public interface ContractSignerMapper
 
     /**
      * 批量删除合同签署
-     * 
+     *
      * @param ids 需要删除的数据主键集合
      * @return 结果
      */
     public int deleteContractSignerByIds(Long[] ids);
+    /*
+    * 根据合同id和userid查询合同
+    * */
+    public ContractSigner selectContractSignerByContractIdAndUserId(Long contractId, Long userId);
 }

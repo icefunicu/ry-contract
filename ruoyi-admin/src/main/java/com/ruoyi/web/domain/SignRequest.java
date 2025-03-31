@@ -2,6 +2,7 @@ package com.ruoyi.web.domain;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
  */
 
 @ApiModel("签署-请求对象")
+@Data
 public class SignRequest implements Serializable {
 
     @ApiModelProperty("签署类型，1位置签署，2关键字签署")
@@ -42,6 +44,8 @@ public class SignRequest implements Serializable {
 
     @ApiModelProperty("个人签章关键字")
     private String personalKeyword ;
+
+    private int contractId;
 
 
     public Integer getSignType() {
