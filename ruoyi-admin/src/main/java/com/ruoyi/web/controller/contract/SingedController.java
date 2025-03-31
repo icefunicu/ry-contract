@@ -23,9 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -294,6 +292,7 @@ public class SingedController  extends BaseController {
             e.printStackTrace();
             // 即使写入失败，也继续返回签署结果
         }
+
         ContractSigner contractSigner = contractSignerService.selectContractSignerByContractIdAndUserId((long) contractId, userId);
 
         contractSigner.setSigned(1);
@@ -323,13 +322,17 @@ public class SingedController  extends BaseController {
         return Result.OK(response);
 
     }
-    public byte [] getResourceFiles(String path) {
+    public byte[] getResourceFiles(String path) {
         try {
-            InputStream inputStream = ResourceUtils.class.getClassLoader()
-                    .getResourceAsStream(path);
+            File file = new File(path);
+            if (!file.exists()) {
+                System.err.println("文件不存在: " + path);
+                return null;
+            }
+            FileInputStream inputStream = new FileInputStream(file);
             return read(inputStream);
-        }catch (Exception e){
-            System.err.println(path);
+        } catch (Exception e) {
+            System.err.println("读取文件失败: " + path);
             e.printStackTrace();
         }
         return null;

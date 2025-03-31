@@ -2,6 +2,7 @@ package com.ruoyi.web.mapper;
 
 import java.util.List;
 import com.ruoyi.web.domain.ContractSigner;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 合同签署Mapper接口
@@ -61,5 +62,6 @@ public interface ContractSignerMapper
     /*
     * 根据合同id和userid查询合同
     * */
-    public ContractSigner selectContractSignerByContractIdAndUserId(Long contractId, Long userId);
+
+    public ContractSigner selectContractSignerByContractIdAndUserId(@Param("contractId") Long contractId, @Param("userId") Long userId);
 }
