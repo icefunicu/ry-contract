@@ -304,7 +304,7 @@ public class ContractController extends BaseController
         saveHtmlToFile(contract.getContent(), htmlFilePath);
         generatePdfFromHtml(htmlFilePath, pdfFilePath);
 
-        return "http://localhost:8080/profile" + "contract_" + contractId + ".pdf";
+        return "http://localhost:8080/profile/" + "contract_" + contractId + ".pdf";
     }
 
     /**
@@ -323,7 +323,7 @@ public class ContractController extends BaseController
             // 保存文件
             file.transferTo(new File(filePath));
 
-            return "文件上传成功: " + "/" + file.getOriginalFilename();
+            return file.getOriginalFilename();
         } catch (IOException e) {
             e.printStackTrace();
             return "文件上传失败";

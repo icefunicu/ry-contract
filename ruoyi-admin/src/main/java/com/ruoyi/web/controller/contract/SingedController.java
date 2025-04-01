@@ -17,6 +17,7 @@ import org.resrun.sdk.vo.request.DocumentSignRequest;
 import org.resrun.sdk.vo.response.CertEventResponse;
 import org.resrun.sdk.vo.response.DocumentSignResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -86,6 +87,8 @@ public class SingedController  extends BaseController {
         return Result.OK(response) ;
 
     }
+    @Value("${ruoyi.profile}")
+    private String fileLocation;
     @ApiOperation("签署")
     @RequestMapping(value = "/sign",method = RequestMethod.POST)
     public Result<SignResponse> sign(@RequestBody SignRequest request){
@@ -96,14 +99,8 @@ public class SingedController  extends BaseController {
         if(contract == null){
             return Result.error("合同不存在",null);
         }
-        ClassLoader classLoader = getClass().getClassLoader();
-        URL resource1 = classLoader.getResource("");
-        String classpath = resource1.getPath();
-        if (classpath.startsWith("/")) {
-            classpath = classpath.substring(1);
-        }
 
-        String fileName = classpath + "static/contract_" + contractId + ".pdf";
+        String fileName = fileLocation + "/contract_" + contractId + ".pdf";
 
         byte[] signFileBytes = null ;
         byte[] entSealBytes = null ;
@@ -296,7 +293,7 @@ public class SingedController  extends BaseController {
         ContractSigner contractSigner = contractSignerService.selectContractSignerByContractIdAndUserId((long) contractId, userId);
 
         contractSigner.setSigned(1);
-        contractSigner.setSignImage("http://localhost:8080/contract_" + contractId + ".pdf");
+        contractSigner.setSignImage("http://localhost:8080/profile/contract_" + contractId + ".pdf");
         contractSignerService.updateContractSigner(contractSigner);
 
         // 判断是否双方都已签署，如果是，则将合同状态改为已签署
