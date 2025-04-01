@@ -302,6 +302,7 @@ public class ContractController extends BaseController
 
         return "http://localhost:8080/" + "contract_" + contractId + ".pdf";
     }
+
     /**
      * 调用wkhtmltopdf生成pdf
      */

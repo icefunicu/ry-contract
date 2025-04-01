@@ -57,7 +57,8 @@ public class ContractSignerController extends BaseController {
             }
             return getDataTable(list);
         }else{
-            List<ContractSigner> list = contractSignerService.selectContractSignerListByUserId(getUserId());
+            contractSigner.setUserId(getUserId());
+            List<ContractSigner> list = contractSignerService.selectContractSignerList(contractSigner);
             for(ContractSigner cs : list){
                 Long ContractId = cs.getContractId();
                 Contract contract = contractService.selectContractById(ContractId);
