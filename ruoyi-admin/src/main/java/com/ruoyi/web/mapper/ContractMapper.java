@@ -62,4 +62,6 @@ public interface ContractMapper
     public int deleteContractByIds(Long[] ids);
 
     List<Contract> selectContractByPaOrPb(Long userId);
+
+    List<Contract> selectContractByTitle(String title);
 }

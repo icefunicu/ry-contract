@@ -6,9 +6,19 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
 import fr.opensagres.poi.xwpf.converter.xhtml.Base64EmbedImgManager;
 import fr.opensagres.poi.xwpf.converter.xhtml.XHTMLConverter;
 import fr.opensagres.poi.xwpf.converter.xhtml.XHTMLOptions;
+import org.apache.poi.hwpf.HWPFDocument;
+import org.apache.poi.hwpf.converter.WordToHtmlConverter;
+import org.apache.poi.hwpf.extractor.WordExtractor;
 import org.apache.poi.xwpf.usermodel.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +32,9 @@ import com.ruoyi.web.service.IContractTemplatesService;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
 import org.springframework.web.multipart.MultipartFile;
+import org.w3c.dom.DocumentFragment;
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSSerializer;
 
 
 /**
@@ -108,36 +121,62 @@ public class ContractTemplatesController extends BaseController
     @PostMapping("/upload")
     public AjaxResult convertWordToHtml(@RequestParam("file") MultipartFile file) {
         try (InputStream input = file.getInputStream()) {
-            XWPFDocument document = new XWPFDocument(input);
-            XHTMLOptions options = XHTMLOptions.create()
-                    .setImageManager(new Base64EmbedImgManager())  // 图片转Base64
-                    .setFragment(true);  // 只转换内容，不包括头尾标签
+            String fileName = file.getOriginalFilename();
+            String html;
 
-            ByteArrayOutputStream htmlStream = new ByteArrayOutputStream();
-            XHTMLConverter.getInstance().convert(document, htmlStream, options);
+            if (fileName != null && fileName.endsWith(".docx")) {
+                // 处理 .docx 文件
+                XWPFDocument document = new XWPFDocument(input);
+                XHTMLOptions options = XHTMLOptions.create()
+                        .setImageManager(new Base64EmbedImgManager()) // 图片转Base64
+                        .setFragment(true);
+                ByteArrayOutputStream htmlStream = new ByteArrayOutputStream();
+                XHTMLConverter.getInstance().convert(document, htmlStream, options);
+                html = new String(htmlStream.toByteArray(), StandardCharsets.UTF_8);
+            } else if (fileName != null && fileName.endsWith(".doc")) {
+                // 处理 .doc 文件
+                HWPFDocument document = new HWPFDocument(input);
+                WordToHtmlConverter converter = new WordToHtmlConverter(
+                        DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()
+                );
+                converter.processDocument(document);
 
-            String html = new String(htmlStream.toByteArray(), StandardCharsets.UTF_8);
+                // 输出 HTML
+                ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+                TransformerFactory transformerFactory = TransformerFactory.newInstance();
+                Transformer transformer = transformerFactory.newTransformer();
+                transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+                transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+                transformer.transform(
+                        new DOMSource(converter.getDocument()), new StreamResult(outStream)
+                );
 
-            // 手动处理标题、居中和字体样式转换
-            html = convertHeadingsToHtmlTags(html);  // 转换标题
-            html = convertTextAlignmentToHtmlTags(html); // 处理居中样式
-            html = convertFontStylesToHtmlTags(html); // 处理字体样式（粗体、斜体等）
+                html = new String(outStream.toByteArray(), StandardCharsets.UTF_8);
 
-            // 清洗 HTML，去除不必要的标签和错误的标签闭合
+                // 兜底方案：若 HTML 为空，尝试提取纯文本
+                if (html.trim().isEmpty()) {
+                    WordExtractor extractor = new WordExtractor(document);
+                    html = "<p>" + extractor.getText().replace("\n", "<br>") + "</p>";
+                }
+            } else {
+                return error("不支持的文件格式");
+            }
+
+            // 规范 HTML 内容
             html = cleanHtmlTags(html);
-
-            System.out.println(html);  // 打印 HTML 内容查看
 
             // 保存到数据库
             ContractTemplates contractTemplates = new ContractTemplates();
             contractTemplates.setContent(html);
-            contractTemplates.setName(file.getOriginalFilename().substring(0, file.getOriginalFilename().lastIndexOf(".")));
+            contractTemplates.setName(fileName.substring(0, fileName.lastIndexOf(".")));
 
             return contractTemplatesService.insertContractTemplates(contractTemplates) > 0 ? success("上传成功") : error("上传失败");
         } catch (Exception e) {
             return error(e.getMessage());
         }
     }
+
+
 
     private String convertHeadingsToHtmlTags(String html) {
         // 不需要转换为 h1, h2 等，保持为 <p><span> 格式

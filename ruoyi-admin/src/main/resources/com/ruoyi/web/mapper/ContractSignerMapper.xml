@@ -25,7 +25,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="userId != null "> and user_id = #{userId}</if>
             <if test="signed != null "> and signed = #{signed}</if>
             <if test="signImage != null  and signImage != ''"> and sign_image = #{signImage}</if>
-            <if test="signTime != null "> and sign_time = #{signTime}</if>
+            <if test="signTime != null "> and DATE(sign_time) = #{signTime}</if>
             <if test="signerRole != null  and signerRole != ''"> and signer_role = #{signerRole}</if>
         </where>
     </select>

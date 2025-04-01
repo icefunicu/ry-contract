@@ -26,19 +26,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.core.page.TableDataInfo;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -99,6 +94,23 @@ public class ContractController extends BaseController
         }
         return getDataTable(list);
     }
+    /*
+    * 根据合同标题查询合同
+    * */
+    @PostMapping("/search")
+    public TableDataInfo search(Contract contract){
+        startPage();
+        List<Contract> list = contractService.selectContractByTitle(contract.getTitle());
+        for(Contract c:list){
+            int userId = c.getCreatedBy();
+            int partyA = c.getPartyA();
+            int partyB = c.getPartyB();
+            c.setCreatedByName(userService.selectUserById((long) userId).getNickName());
+            c.setPartyAName(userService.selectUserById((long)partyA).getNickName());
+            c.setPartyBName(userService.selectUserById((long)partyB).getNickName());
+        }
+        return getDataTable(list);
+    }
 
     /**
      * 导出合同列表
@@ -145,6 +157,7 @@ public class ContractController extends BaseController
     public AjaxResult add(@RequestBody Contract contract, HttpServletRequest request)
     {
         contract.setCreatedBy(Math.toIntExact(getUserId()));
+
         return toAjax(contractService.insertContract(contract));
     }
 
@@ -157,6 +170,7 @@ public class ContractController extends BaseController
     {
         return toAjax(contractService.updateContract(contract));
     }
+
 
     /**
      *  开始签署合同
@@ -177,9 +191,6 @@ public class ContractController extends BaseController
         return toAjax(contractService.deleteContractByIds(ids));
     }
 
-    @Value("${ruoyi.profile}")
-    private String contractPath;
-
     /**
      *  根据 contractId 查找合同并转换为 PDF 返回
      */
@@ -187,7 +198,7 @@ public class ContractController extends BaseController
     public ResponseEntity<InputStreamResource> getContractPdf(@PathVariable String contractId) throws Exception {
         Contract contract = contractService.selectContractById(Long.parseLong(contractId));
 
-        String docxPath = contractPath + contract.getFilePath();
+        String docxPath = fileLocation + contract.getFilePath();
 
         File docxFile = new File(docxPath);
         if (!docxFile.exists()) {
@@ -195,7 +206,7 @@ public class ContractController extends BaseController
         }
 
         // 临时 PDF 文件路径
-        File pdfFile = File.createTempFile(contractPath + contractId, ".pdf");
+        File pdfFile = File.createTempFile(fileLocation + contractId, ".pdf");
 
         // 执行转换
         convertWordToPdf(docxPath, pdfFile.getAbsolutePath());
@@ -286,22 +297,41 @@ public class ContractController extends BaseController
         if (contract == null) {
             return null;
         }
-
-        ClassLoader classLoader = getClass().getClassLoader();
-        URL resource1 = classLoader.getResource("");
-        String classpath = resource1.getPath();
-        if (classpath.startsWith("/")) {
-            classpath = classpath.substring(1);
-        }
         // 2. 生成 PDF
-        String htmlFilePath = classpath + "static/contract_" + contractId + ".html";
-        String pdfFilePath = classpath + "static/contract_" + contractId + ".pdf";
+        String htmlFilePath = fileLocation + "/contract_" + contractId + ".html";
+        String pdfFilePath = fileLocation + "/contract_" + contractId + ".pdf";
 
         saveHtmlToFile(contract.getContent(), htmlFilePath);
         generatePdfFromHtml(htmlFilePath, pdfFilePath);
 
-        return "http://localhost:8080/" + "contract_" + contractId + ".pdf";
+        return "http://localhost:8080/profile" + "contract_" + contractId + ".pdf";
     }
+
+    /**
+     * 上传接口,用来接收前端传来的二进制文件
+     * */
+    @PostMapping("/uploadfile")
+    public String uploadFile(@RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return "上传失败，文件为空";
+        }
+
+        try {
+            // 获取文件路径
+            String filePath = Paths.get(file.getOriginalFilename()).toString();
+
+            // 保存文件
+            file.transferTo(new File(filePath));
+
+            return "文件上传成功: " + "/" + file.getOriginalFilename();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "文件上传失败";
+        }
+    }
+
+    @Value("${ruoyi.profile}")
+    private String fileLocation;
 
     /**
      * 调用wkhtmltopdf生成pdf
@@ -322,8 +352,8 @@ public class ContractController extends BaseController
             if (classpath.startsWith("/")) {
                 classpath = classpath.substring(1);
             }
-            String htmlFilePath = classpath + "static/contract_" + contractId + ".html";
-            String pdfFilePath = classpath + "static/contract_" + contractId + ".pdf";
+            String htmlFilePath =  fileLocation+ "/contract_" + contractId + ".html";
+            String pdfFilePath =  fileLocation+ "/contract_" + contractId + ".pdf";
             saveHtmlToFile(contract.getContent(), htmlFilePath);
             generatePdfFromHtml(htmlFilePath, pdfFilePath);
 

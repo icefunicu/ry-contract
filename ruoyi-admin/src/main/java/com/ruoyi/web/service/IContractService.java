@@ -62,4 +62,6 @@ public interface IContractService
     public int deleteContractById(Long id);
 
     List<Contract> selectContractByPaOrPb(Long userId);
+
+    List<Contract> selectContractByTitle(String title);
 }

@@ -36,6 +36,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectContractVo"/>
         where id = #{id}
     </select>
+    <select id="selectContractByTitle" parameterType="String" resultMap="ContractResult">
+        <include refid="selectContractVo"/>
+        where title = #{title}
+    </select>
 
     <insert id="insertContract" parameterType="Contract" useGeneratedKeys="true" keyProperty="id">
         insert into contract

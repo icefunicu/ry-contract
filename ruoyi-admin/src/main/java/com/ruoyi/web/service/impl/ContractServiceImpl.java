@@ -103,5 +103,9 @@ public class ContractServiceImpl implements IContractService
     public List<Contract> selectContractByPaOrPb(Long userId) {
         return contractMapper.selectContractByPaOrPb(userId);
     }
+    @Override
+    public List<Contract> selectContractByTitle(String title) {
+        return contractMapper.selectContractByTitle(title);
+    }
 
 }
