@@ -32,7 +32,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectContractApprovalVo"/>
         where id = #{id}
     </select>
-    <select id="selectLegalList" resultType="com.ruoyi.web.domain.ContractApproval">
+    <select id="selectLegalList" resultMap="ContractApprovalResult">
         <include refid="selectContractApprovalVo"/>
         <where>
            comment = '法务审核'
