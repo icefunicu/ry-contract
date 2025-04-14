@@ -144,6 +144,19 @@ public class ContractApprovalController extends BaseController
         return toAjax(contractApprovalService.updateContractApproval(approval));
     }
 
+    /**
+     * 法务审核驳回
+     * */
+    @PutMapping("/legal/reject")
+    public AjaxResult legalReject(@RequestBody ContractApproval contractApproval) {
+        ContractApproval approval = contractApprovalService.selectContractApprovalById(contractApproval.getId());
+        approval.setStatus("已驳回");
+        Long contractId = approval.getContractId();
+        Contract contract = contractService.selectContractById(contractId);
+        contract.setStatus("已驳回");
+        contractService.updateContract(contract);
+        return toAjax(contractApprovalService.updateContractApproval(approval));
+    }
 
 
     /**

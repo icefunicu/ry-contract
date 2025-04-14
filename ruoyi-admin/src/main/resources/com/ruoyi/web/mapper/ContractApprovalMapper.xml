@@ -23,7 +23,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="contractId != null "> and contract_id = #{contractId}</if>
             <if test="approverId != null "> and approver_id = #{approverId}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
-            commit  = '待审核'
+            comment  = '待审批'
             <if test="approvedTime != null "> and approved_time = #{approvedTime}</if>
         </where> ORDER BY approved_time DESC
     </select>
@@ -35,7 +35,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectLegalList" resultType="com.ruoyi.web.domain.ContractApproval">
         <include refid="selectContractApprovalVo"/>
         <where>
-           commit = '法务审核'
+           comment = '法务审核'
         </where> ORDER BY approved_time DESC
     </select>
 
