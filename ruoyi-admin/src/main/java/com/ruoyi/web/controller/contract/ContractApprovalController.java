@@ -137,7 +137,7 @@ public class ContractApprovalController extends BaseController
     public AjaxResult legalApprove(@RequestBody ContractApproval contractApproval) {
         ContractApproval approval = contractApprovalService.selectContractApprovalById(contractApproval.getId());
         approval.setStatus("待审批");
-        approval.setComment("待审批");
+        approval.setComment("法务审核已通过");
         Long contractId = approval.getContractId();
         Contract contract = contractService.selectContractById(contractId);
         contract.setStatus("待审批");
@@ -152,6 +152,7 @@ public class ContractApprovalController extends BaseController
     public AjaxResult legalReject(@RequestBody ContractApproval contractApproval) {
         ContractApproval approval = contractApprovalService.selectContractApprovalById(contractApproval.getId());
         approval.setStatus("已驳回");
+        approval.setComment("法务审核已驳回");
         Long contractId = approval.getContractId();
         Contract contract = contractService.selectContractById(contractId);
         contract.setStatus("待修改");
@@ -167,6 +168,7 @@ public class ContractApprovalController extends BaseController
     public AjaxResult approve(@RequestBody ContractApproval contractApproval) {
         ContractApproval approval = contractApprovalService.selectContractApprovalById(contractApproval.getId());
         approval.setStatus("已通过");
+
         Long contractId = approval.getContractId();
         Contract contract = contractService.selectContractById(contractId);
         contract.setStatus("待签字");
