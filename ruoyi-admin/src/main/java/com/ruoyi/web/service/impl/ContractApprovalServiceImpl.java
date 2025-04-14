@@ -9,19 +9,19 @@ import com.ruoyi.web.service.IContractApprovalService;
 
 /**
  * 合同流程Service业务层处理
- * 
+ *
  * @author ruoyi
  * @date 2025-03-28
  */
 @Service
-public class ContractApprovalServiceImpl implements IContractApprovalService 
+public class ContractApprovalServiceImpl implements IContractApprovalService
 {
     @Autowired
     private ContractApprovalMapper contractApprovalMapper;
 
     /**
      * 查询合同流程
-     * 
+     *
      * @param id 合同流程主键
      * @return 合同流程
      */
@@ -33,7 +33,7 @@ public class ContractApprovalServiceImpl implements IContractApprovalService
 
     /**
      * 查询合同流程列表
-     * 
+     *
      * @param contractApproval 合同流程
      * @return 合同流程
      */
@@ -45,7 +45,7 @@ public class ContractApprovalServiceImpl implements IContractApprovalService
 
     /**
      * 新增合同流程
-     * 
+     *
      * @param contractApproval 合同流程
      * @return 结果
      */
@@ -57,7 +57,7 @@ public class ContractApprovalServiceImpl implements IContractApprovalService
 
     /**
      * 修改合同流程
-     * 
+     *
      * @param contractApproval 合同流程
      * @return 结果
      */
@@ -69,7 +69,7 @@ public class ContractApprovalServiceImpl implements IContractApprovalService
 
     /**
      * 批量删除合同流程
-     * 
+     *
      * @param ids 需要删除的合同流程主键
      * @return 结果
      */
@@ -81,7 +81,7 @@ public class ContractApprovalServiceImpl implements IContractApprovalService
 
     /**
      * 删除合同流程信息
-     * 
+     *
      * @param id 合同流程主键
      * @return 结果
      */
@@ -89,5 +89,10 @@ public class ContractApprovalServiceImpl implements IContractApprovalService
     public int deleteContractApprovalById(Long id)
     {
         return contractApprovalMapper.deleteContractApprovalById(id);
+    }
+
+    @Override
+    public List<ContractApproval> selectLegalList(ContractApproval contractApproval) {
+        return contractApprovalMapper.selectLegalList(contractApproval);
     }
 }

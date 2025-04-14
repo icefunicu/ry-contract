@@ -5,15 +5,15 @@ import com.ruoyi.web.domain.ContractApproval;
 
 /**
  * 合同流程Service接口
- * 
+ *
  * @author ruoyi
  * @date 2025-03-28
  */
-public interface IContractApprovalService 
+public interface IContractApprovalService
 {
     /**
      * 查询合同流程
-     * 
+     *
      * @param id 合同流程主键
      * @return 合同流程
      */
@@ -21,7 +21,7 @@ public interface IContractApprovalService
 
     /**
      * 查询合同流程列表
-     * 
+     *
      * @param contractApproval 合同流程
      * @return 合同流程集合
      */
@@ -29,7 +29,7 @@ public interface IContractApprovalService
 
     /**
      * 新增合同流程
-     * 
+     *
      * @param contractApproval 合同流程
      * @return 结果
      */
@@ -37,7 +37,7 @@ public interface IContractApprovalService
 
     /**
      * 修改合同流程
-     * 
+     *
      * @param contractApproval 合同流程
      * @return 结果
      */
@@ -45,7 +45,7 @@ public interface IContractApprovalService
 
     /**
      * 批量删除合同流程
-     * 
+     *
      * @param ids 需要删除的合同流程主键集合
      * @return 结果
      */
@@ -53,9 +53,11 @@ public interface IContractApprovalService
 
     /**
      * 删除合同流程信息
-     * 
+     *
      * @param id 合同流程主键
      * @return 结果
      */
     public int deleteContractApprovalById(Long id);
+
+    List<ContractApproval> selectLegalList(ContractApproval contractApproval);
 }

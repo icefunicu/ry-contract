@@ -274,17 +274,20 @@ public class ContractController extends BaseController
         contractService.updateContract(contract);
         return success();
     }
+
+
     /**
-     *  通过合同，更新合同状态为待审批
+     *  通过合同，更新合同状态为法务审核
      * */
     @PostMapping("/pass")
     public AjaxResult pass(@RequestBody Contract contract) throws IOException, InterruptedException {
-        contract.setStatus("待审批");
+
+        contract.setStatus("法务审核");
         ContractApproval contractApproval = new ContractApproval();
         contractApproval.setContractId((long) contract.getId());
-        contractApproval.setComment("待审批");
-        contractApproval.setApproverId(103L);
-        contractApproval.setStatus("待审批");
+        contractApproval.setComment("法务审核");
+        contractApproval.setApproverId(104L);
+        contractApproval.setStatus("法务审核");
         contractApproval.setApprovedTime(new Date());
 
         contractApprovalService.insertContractApproval(contractApproval);

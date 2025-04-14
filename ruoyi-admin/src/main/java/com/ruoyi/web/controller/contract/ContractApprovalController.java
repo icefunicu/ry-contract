@@ -113,9 +113,43 @@ public class ContractApprovalController extends BaseController
     }
 
     /**
+     * 法务审核状态的流程记录展示list
+     * */
+    @GetMapping("/legal")
+    public TableDataInfo legalList(ContractApproval contractApproval)
+    {
+        startPage();
+        List<ContractApproval> list = contractApprovalService.selectLegalList(contractApproval);
+        for (ContractApproval approval : list) {
+            Long approverId = approval.getApproverId();
+            Long contractId = approval.getContractId();
+            approval.setApproverName(userService.selectUserById(approverId).getUserName());
+            approval.setContractTitle(contractService.selectContractById(contractId).getTitle());
+            approval.setContract(contractService.selectContractById(contractId));
+        }
+        return getDataTable(list);
+    }
+
+    /**
+     * 通过法务审核，合同状态变更为待审核
+     * */
+    @PutMapping("/legal/approve")
+    public AjaxResult legalApprove(@RequestBody ContractApproval contractApproval) {
+        ContractApproval approval = contractApprovalService.selectContractApprovalById(contractApproval.getId());
+        approval.setStatus("待审核");
+        Long contractId = approval.getContractId();
+        Contract contract = contractService.selectContractById(contractId);
+        contract.setStatus("待审核");
+        contractService.updateContract(contract);
+        return toAjax(contractApprovalService.updateContractApproval(approval));
+    }
+
+
+
+    /**
      *   通过审核
      * */
-    @PutMapping("/approve")
+    @PostMapping ("/approve")
     public AjaxResult approve(@RequestBody ContractApproval contractApproval) {
         ContractApproval approval = contractApprovalService.selectContractApprovalById(contractApproval.getId());
         approval.setStatus("已通过");

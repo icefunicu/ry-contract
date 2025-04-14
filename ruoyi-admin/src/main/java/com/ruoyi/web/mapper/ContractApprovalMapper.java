@@ -58,4 +58,6 @@ public interface ContractApprovalMapper
      * @return 结果
      */
     public int deleteContractApprovalByIds(Long[] ids);
+
+    List<ContractApproval> selectLegalList(ContractApproval contractApproval);
 }
