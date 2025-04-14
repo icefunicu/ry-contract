@@ -380,7 +380,7 @@ public class ContractController extends BaseController
     private void saveHtmlToFile(String htmlContent, String filePath) throws IOException {
         String htmlWrapper = "<!DOCTYPE html>\n<html>\n<head>\n<meta charset=\"UTF-8\">\n<title>合同</title>\n</head>\n<body>\n"
                 + htmlContent +
-                "\n</body>\n</html>";
+                "\n<p>电子印章盖章处：</p ><p><br data-mce-bogus=\"1\"></p ><p><br data-mce-bogus=\"1\"></p ><p><br data-mce-bogus=\"1\"></p ><p><br data-mce-bogus=\"1\"></p ><p>个人手写签名处：</p ></body></body>\n</html>";
         Files.write(Paths.get(filePath), htmlWrapper.getBytes());
     }
     // 调用 wkhtmltopdf 生成 PDF
