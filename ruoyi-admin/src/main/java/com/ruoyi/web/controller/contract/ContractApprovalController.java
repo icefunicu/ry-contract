@@ -136,10 +136,10 @@ public class ContractApprovalController extends BaseController
     @PutMapping("/legal/approve")
     public AjaxResult legalApprove(@RequestBody ContractApproval contractApproval) {
         ContractApproval approval = contractApprovalService.selectContractApprovalById(contractApproval.getId());
-        approval.setStatus("待审核");
+        approval.setStatus("待审批");
         Long contractId = approval.getContractId();
         Contract contract = contractService.selectContractById(contractId);
-        contract.setStatus("待审核");
+        contract.setStatus("待审批");
         contractService.updateContract(contract);
         return toAjax(contractApprovalService.updateContractApproval(approval));
     }
@@ -153,7 +153,7 @@ public class ContractApprovalController extends BaseController
         approval.setStatus("已驳回");
         Long contractId = approval.getContractId();
         Contract contract = contractService.selectContractById(contractId);
-        contract.setStatus("已驳回");
+        contract.setStatus("待修改");
         contractService.updateContract(contract);
         return toAjax(contractApprovalService.updateContractApproval(approval));
     }
@@ -162,7 +162,7 @@ public class ContractApprovalController extends BaseController
     /**
      *   通过审核
      * */
-    @PostMapping ("/approve")
+    @PutMapping ("/approve")
     public AjaxResult approve(@RequestBody ContractApproval contractApproval) {
         ContractApproval approval = contractApprovalService.selectContractApprovalById(contractApproval.getId());
         approval.setStatus("已通过");
